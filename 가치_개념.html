@@ -12,77 +12,143 @@
             --card-white: #ffffff; --overlay: rgba(0, 0, 0, 0.4); --success-green: #34c759;
             --memo-yellow: #fffde7; --reflection-mint: #e8f5e9;
             --input-shadow: #f0f2f5; 
-            --sky-blue-active: #e0f2fe; /* 연한 하늘색 */
+            --sky-blue-active: #e0f2fe;
+            --apple-red: #ff2d55;
         }
 
-        /* 🖱️ 슬림 스크롤바 */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-apple); }
         ::-webkit-scrollbar-thumb { background: #d2d2d7; border-radius: 10px; }
 
-        html, body { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; background-color: var(--bg-apple); display: flex; flex-direction: column; overflow: hidden; }
+        html, body { margin: 0; padding: 0; height: 100%; font-family: 'Inter', sans-serif; background-color: var(--bg-apple); display: flex; flex-direction: column; overflow: hidden; transition: box-shadow 0.5s; cursor: default !important;}
 
-        /* 🔵 헤더 및 메뉴 */
+        body.status-help { box-shadow: inset 0 0 0 24px var(--apple-red); }
+        body.status-done { box-shadow: inset 0 0 0 24px var(--success-green); }
+
         header { background: linear-gradient(180deg, var(--header-blue-top) 0%, var(--header-blue-bottom) 100%); padding: 20px 20px 0; text-align: center; color: white; flex-shrink: 0; position: relative; z-index: 5000; }
         .main-title { font-size: 2.1rem; font-weight: 800; margin: 0; letter-spacing: -0.04em; }
+
+        .status-controller { position: absolute; top: 18px; right: 25px; display: flex; gap: 10px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 20px; backdrop-filter: blur(5px); z-index: 6000; }
+        .status-btn { padding: 8px 16px; border-radius: 14px; font-weight: 800; font-size: 0.85rem; border: none; background: rgba(255,255,255,0.9); color: #333; cursor: pointer !important; transition: 0.2s; }
+        .status-btn:hover { transform: translateY(-2px); }
+        .status-btn.btn-help { color: var(--apple-red); }
+        .status-btn.btn-done { color: var(--success-green); }
 
         nav { margin-top: 20px; display: flex; justify-content: center; gap: 4px; padding-bottom: 0; position: relative; }
         .menu-item { position: relative; display: inline-block; }
         .menu-link {
             color: rgba(255, 255, 255, 0.75) !important; text-decoration: none; font-size: 0.78rem; font-weight: 600;
             padding: 12px 14px 8px 14px; border-radius: 12px 12px 0 0;
-            background: rgba(255, 255, 255, 0.05); transition: 0.2s; display: block;
+            background: rgba(255, 255, 255, 0.05); transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); display: block;
             border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: none; white-space: nowrap;
         }
         
-        .menu-item:hover > .menu-link { background-color: rgba(255, 255, 255, 0.15) !important; color: #ffffff !important; }
+        /* ⭐ 상위 메뉴 호버 시 반응(입체감 및 색상) 강화 */
+        .menu-item:hover > .menu-link:not(.active) { 
+            background-color: rgba(255, 255, 255, 0.2) !important; /* 살짝 더 밝게 */
+            color: #ffffff !important; 
+            transform: translateY(-2px); /* 살짝 위로 떠오름 */
+            box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.1) !important; /* 상단 그림자로 입체감 추가 */
+        }
         
-        /* 활성 메뉴: 연한 하늘색 강조 */
+        /* ⭐ 현재 활성화된 메뉴 탭의 입체감 및 색상 효과 */
         .menu-link.active { 
             background-color: var(--sky-blue-active) !important; 
             color: #0369a1 !important; 
             font-weight: 900 !important; 
-            transform: translateY(-2px); 
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.1) !important;
+            transform: translateY(-4px); 
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.15) !important; 
         }
 
-        /* 하위 메뉴 스타일 */
-        .dropdown { 
-            position: absolute; top: 100%; left: 50%; transform: translateX(-50%); 
-            background: white; border-radius: 0 0 14px 14px; min-width: 150px; 
-            display: none; list-style: none; padding: 10px 0; margin: 0; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 6000; 
-        }
+        .dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: white; border-radius: 0 0 14px 14px; min-width: 150px; display: none; list-style: none; padding: 10px 0; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 6000; }
         .menu-item:hover .dropdown { display: block !important; }
         .dropdown li a { display: block; padding: 10px 15px; color: #1d1d1f; text-decoration: none; font-size: 0.8rem; text-align: center; font-weight: 600; }
         .dropdown li a:hover { background: var(--sky-blue-active); color: #0369a1; }
 
-        /* 🟠 메인 레이아웃 */
         main { flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1000; }
-        .content-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
-        .content-card { background: var(--card-white); padding: 40px 50px; border-radius: 28px; width: 100%; max-width: 900px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.04); }
+        .content-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 25px 20px; }
+        .content-card { background: var(--card-white); padding: 30px 40px; border-radius: 28px; width: 100%; max-width: 950px; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.04); }
 
-        /* 📺 슬라이드 섹션 */
-        .slide-section { background: linear-gradient(135deg, #f8fbff 0%, #edf4ff 100%); border-radius: 20px; padding: 25px; margin-bottom: 30px; border: 1px solid rgba(0, 113, 227, 0.1); display: flex; flex-direction: column; align-items: center; width: 100%; box-sizing: border-box; }
-        .flow-container { display: flex; justify-content: center; align-items: center; gap: clamp(30px, 8vw, 80px); width: 100%; margin-top: 15px; }
-        .flow-item { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .compare-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
+        .compare-card { background: white; border-radius: 18px; border: 1.5px solid #eaeaea; box-shadow: 0 8px 20px rgba(0,0,0,0.03); display: flex; flex-direction: column; padding: 15px; overflow: hidden; }
+        .card-title { font-size: 1rem; font-weight: 800; color: #1d1d1f; text-align: center; margin-bottom: 12px; }
+        
+        .zone { position: relative; height: 100px; border-radius: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .zone-label { position: absolute; top: 8px; left: 10px; font-size: 0.75rem; font-weight: 800; z-index: 10; }
+        .desc-label { position: absolute; bottom: 8px; width: 100%; text-align: center; font-size: 0.7rem; font-weight: 700; z-index: 10; }
+        
+        .analog-zone { background: #f9f9f9; border: 1px dashed #dcdcdc; margin-bottom: 8px; }
+        .analog-zone .zone-label { color: #888; }
+        .analog-zone .desc-label { color: #888; }
+        
+        .digital-zone { background: #f0f7ff; border: 1.5px solid rgba(0,113,227,0.2); }
+        .digital-zone .zone-label { color: var(--apple-blue); }
+        .digital-zone .desc-label { color: var(--apple-blue); }
 
-        /* 📦 보기 및 스코어 */
-        .word-score-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 35px; width: 100%; }
-        .inline-tip { background: white; color: var(--apple-blue); border: 1.5px solid var(--apple-blue); padding: 8px 16px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
+        .analog-doc { width: 30px; height: 30px; fill: #9e9e9e; position: absolute; }
+        .doc1 { left: 25%; animation: degrade1 4s infinite alternate; }
+        .doc2 { left: 50%; transform: translateX(-50%); animation: degrade2 4s infinite alternate; }
+        .doc3 { left: 75%; transform: translateX(-100%); animation: degrade3 4s infinite alternate; }
+        
+        @keyframes degrade1 { 0%, 100% { opacity: 1; filter: blur(0); } }
+        @keyframes degrade2 { 0% { opacity: 1; filter: blur(0); } 100% { opacity: 0.5; filter: blur(1px); } }
+        @keyframes degrade3 { 0% { opacity: 1; filter: blur(0); } 100% { opacity: 0.2; filter: blur(2px); } }
+
+        .digital-doc { width: 30px; height: 30px; fill: var(--apple-blue); position: absolute; filter: drop-shadow(0 0 5px rgba(0,113,227,0.4)); }
+        .ddoc1 { left: 50%; transform: translateX(-50%); }
+        .ddoc2 { left: 50%; transform: translateX(-50%); animation: splitLeft 2s infinite alternate cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .ddoc3 { left: 50%; transform: translateX(-50%); animation: splitRight 2s infinite alternate cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+
+        @keyframes splitLeft { 0% { left: 50%; opacity: 0; } 100% { left: 25%; opacity: 1; } }
+        @keyframes splitRight { 0% { left: 50%; opacity: 0; } 100% { left: 75%; transform: translateX(-100%); opacity: 1; } }
+
+        .analog-mail { width: 36px; height: 36px; fill: #8d6e63; position: absolute; animation: slowMove 5s infinite linear; }
+        @keyframes slowMove { 0% { left: -20px; } 100% { left: calc(100% + 20px); } }
+
+        .digital-spark { width: 10px; height: 10px; background: var(--apple-pink); border-radius: 50%; position: absolute; box-shadow: 0 0 10px 4px rgba(255,107,157,0.5); animation: fastZap 0.8s infinite linear; }
+        .digital-spark:nth-child(2) { animation-delay: 0.2s; }
+        .digital-spark:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes fastZap { 0% { left: -10px; transform: scaleX(2); opacity: 0;} 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: calc(100% + 10px); transform: scaleX(5); opacity: 0; } }
+
+        .analog-pile { width: 50px; height: 50px; fill: #b0bec5; }
+        .analog-mag { width: 24px; height: 24px; fill: #ef5350; position: absolute; animation: searchHover 3s infinite; }
+        @keyframes searchHover { 0% { transform: translate(-15px, -15px); } 50% { transform: translate(15px, 15px); } 100% { transform: translate(-15px, -15px); } }
+
+        .digital-chart { width: 45px; height: 45px; fill: var(--apple-blue); position: absolute; z-index: 2; filter: drop-shadow(0 4px 6px rgba(0,113,227,0.3)); animation: chartGrow 2s infinite alternate; }
+        .digital-gear { width: 30px; height: 30px; fill: rgba(0,113,227,0.2); position: absolute; top: 15px; left: 15px; animation: spin 4s infinite linear; z-index: 1;}
+        @keyframes chartGrow { 0% { transform: scaleY(0.5); transform-origin: bottom; } 100% { transform: scaleY(1); transform-origin: bottom; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .word-score-container { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 30px; width: 100%; }
+        .inline-tip { background: white; color: var(--apple-blue); border: 1.5px solid var(--apple-blue); padding: 8px 16px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; cursor: pointer !important; transition: 0.2s; }
         .word-bank { background: #f1f7ff; border: 1.5px solid var(--apple-blue); padding: 15px 25px; border-radius: 18px; display: flex; gap: 15px; flex: 1; justify-content: center; flex-wrap: wrap; }
-        .word-item { background: white; padding: 6px 18px; border-radius: 10px; font-weight: 800; color: var(--apple-blue); font-size: 0.95rem; }
+        
+        .word-item { background: white; padding: 6px 18px; border-radius: 10px; font-weight: 800; color: var(--apple-blue); font-size: 0.95rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); cursor: grab !important; }
+        .word-item:active { cursor: grabbing !important; }
+        
         #scoreBoard { background: var(--apple-pink); color: white; padding: 10px 20px; border-radius: 15px; font-weight: 900; min-width: 120px; text-align: center; }
 
-        /* ⭐ 퀴즈 박스 및 예쁜 힌트 상자 */
         .quiz-box { font-size: 1.1rem; line-height: 2.3; color: #424245; font-weight: 600; background: #f9f9fb; padding: 25px 30px; border-radius: 20px; border: 1px solid #e5e5e7; margin-bottom: 20px; text-align: left; }
-        .blank { border: none; background: var(--input-shadow); border-radius: 12px; width: 125px; height: 40px; text-align: center; font-size: 1.1rem; font-weight: 800; color: var(--apple-blue); outline: none; margin: 0 8px; vertical-align: middle; transition: all 0.2s ease; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.06); }
-        .blank.correct { background: #e8f5e9; color: var(--success-green); box-shadow: none; }
         
-        .hint-btn { background: white; color: var(--apple-blue); border: 1px solid var(--apple-blue); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; cursor: pointer; margin-left: 10px; font-weight: 700; vertical-align: middle; transition: 0.2s; }
+        .blank { 
+            box-sizing: border-box;
+            display: inline-block; width: 100px; height: 38px; 
+            background: white; 
+            border: 2px dashed rgba(0, 113, 227, 0.4); 
+            border-radius: 12px; vertical-align: middle; padding: 0 5px;
+            text-align: center; line-height: 34px; 
+            font-size: 1.1rem; font-weight: 800; color: var(--apple-blue); 
+            margin: 0 8px; transition: all 0.2s ease; 
+            cursor: text !important; 
+            outline: none;
+        }
+        .blank:focus { border-color: var(--apple-blue); box-shadow: 0 0 8px rgba(0, 113, 227, 0.2); }
+        .blank.correct { background: #e8f5e9; color: var(--success-green); border: 2px solid var(--success-green); box-shadow: none; }
+        .blank:disabled { opacity: 1; cursor: default !important; }
+        
+        .hint-btn { background: white; color: var(--apple-blue); border: 1px solid var(--apple-blue); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; cursor: pointer !important; margin-left: 10px; font-weight: 700; vertical-align: middle; transition: 0.2s; }
         .hint-btn:hover { background: var(--apple-blue); color: white; }
         
-        /* ⭐ 복구된 예쁜 힌트 박스 스타일 */
         .hint-display { 
             font-size: 0.85rem; color: var(--apple-blue); font-weight: 700; 
             margin-left: 10px; display: none; background: #eef6ff; 
@@ -90,12 +156,11 @@
             vertical-align: middle; 
         }
 
-        /* 📝 [우] 사이드바 (350px 고정) */
         .sidebar-right { width: 350px; border-left: 1px solid #e0e0e0; display: flex; flex-direction: column; flex-shrink: 0; }
         .memo-section { flex: 0.55; background: var(--memo-yellow); display: flex; flex-direction: column; padding: 25px; }
-        .memo-area { flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; background-image: linear-gradient(#e0dcd0 1px, transparent 1px); background-size: 100% 1.8rem; }
+        .memo-area { flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; background-image: linear-gradient(#e0dcd0 1px, transparent 1px); background-size: 100% 1.8rem; cursor: text !important;}
         .reflection-section { flex: 0.45; background: var(--reflection-mint); border-top: 1px solid #e0e0e0; display: flex; flex-direction: column; padding: 25px; }
-        .reflection-area { flex: 1; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; background: white; resize: none; padding: 15px; font-size: 0.9rem; outline: none; margin-bottom: 15px; }
+        .reflection-area { flex: 1; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px; background: white; resize: none; padding: 15px; font-size: 0.9rem; outline: none; margin-bottom: 15px; cursor: text !important;}
         .capture-tip { font-size: 0.75rem; color: #2e7d32; font-weight: 700; background: rgba(255,255,255,0.6); padding: 10px; border-radius: 10px; border: 1px dashed #2e7d32; text-align: center; }
 
         footer { padding: 15px 40px; background: var(--bg-apple); color: var(--apple-gray); border-top: 1px solid #d2d2d7; font-size: 0.85rem; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
@@ -106,56 +171,114 @@
 <body>
 
     <header>
-        <div class="pre-title">🔍 데이터 탐정단: 세상을 움직이는 보이지 않는 힘</div>
+        <div style="font-size: 0.85rem; font-weight: 600; opacity: 0.9; margin-bottom: 5px;">🔍 디지털 코드의 비밀을 풀어라!</div>
         <h1 class="main-title">데이터 표현 네비게이터</h1>
-        <nav>
-            <!-- ⭐ 홈 메뉴 하위 메뉴 제거 완료 -->
+
+        
+        <div class="status-controller">
+            <button class="status-btn" onclick="setStatus('normal')">초기화</button>
+            <button class="status-btn btn-help" onclick="setStatus('help')">🙋‍♂️ SOS 요청</button>
+            <button class="status-btn btn-done" onclick="setStatus('done')">✅ 미션 완료</button>
+        </div>
+
+      <nav>
             <div class="menu-item"><a href="index.html" class="menu-link">홈</a></div>
-            <div class="menu-item"><a href="#" class="menu-link active">디지털 데이터의 가치</a><ul class="dropdown"><li><a href="가치_개념.html">📖 개념 탐구</a></li><li><a href="value_practice.html">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">비트란?</span><ul class="dropdown"><li><a href="비트_개념.html">📖 개념 탐구</a></li><li><a href="bit_practice.html">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">숫자의 디지털 표현</span><ul class="dropdown"><li><a href="#">📖 개념 탐구</a></li><li><a href="#">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">문자의 디지털 표현</span><ul class="dropdown"><li><a href="#">📖 개념 탐구</a></li><li><a href="#">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">그림의 디지털 표현</span><ul class="dropdown"><li><a href="#">📖 개념 탐구</a></li><li><a href="#">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">소리의 디지털 표현</span><ul class="dropdown"><li><a href="#">📖 개념 탐구</a></li><li><a href="#">🛠️ 활용 실습</a></li></ul></div>
-            <div class="menu-item"><span class="menu-link">동영상의 디지털 표현</span><ul class="dropdown"><li><a href="#">📖 개념 탐구</a></li><li><a href="#">🛠️ 활용 실습</a></li></ul></div>
+            
+            <div class="menu-item">
+                <span class="menu-link active">디지털 데이터의 가치</span>
+                <ul class="dropdown">
+                    <li><a href="가치_개념.html" style="background:var(--sky-blue-active); color:#0369a1; font-weight:900;">📖 개념 탐구</a></li>
+                    <li><a href="가치_활용실습.html">🛠️ 활용 실습</a></li>
+                </ul>
+            </div>
+            
+            <div class="menu-item"><span class="menu-link">비트란?</span><ul class="dropdown"><li><a href="비트_개념.html">📖 개념 탐구</a></li><li><a href="비트_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
+            <div class="menu-item"><span class="menu-link">숫자의 디지털 표현</span><ul class="dropdown"><li><a href="숫자_개념.html">📖 개념 탐구</a></li><li><a href="숫자_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
+            <div class="menu-item"><span class="menu-link">문자의 디지털 표현</span><ul class="dropdown"><li><a href="문자_개념.html">📖 개념 탐구</a></li><li><a href="문자_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
+            <div class="menu-item"><span class="menu-link">이미지의 디지털 표현</span><ul class="dropdown"><li><a href="이미지_개념.html">📖 개념 탐구</a></li><li><a href="이미지_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
+            <div class="menu-item"><span class="menu-link">소리의 디지털 표현</span><ul class="dropdown"><li><a href="소리_개념.html">📖 개념 탐구</a></li><li><a href="소리_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
+            <div class="menu-item"><span class="menu-link">동영상의 디지털 표현</span><ul class="dropdown"><li><a href="동영상_개념.html">📖 개념 탐구</a></li><li><a href="동영상_활용실습.html">🛠️ 활용 실습</a></li></ul></div>
         </nav>
+
+
     </header>
 
     <main>
         <div class="content-container">
             <div class="content-card">
-                <div class="slide-section">
-                    <div style="font-size:1.3rem; font-weight:800; color:var(--apple-blue);">📡 데이터가 만드는 가치의 연결</div>
-                    <div class="flow-container">
-                        <div class="flow-item">
-                            <svg viewBox="0 0 24 24" width="40" fill="#0071e3"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                            <span style="font-weight:800; font-size:0.9rem; margin-top:10px;">나의 소중한 경험 데이터</span>
+                
+                <div class="compare-container">
+                    
+                    <div class="compare-card">
+                        <div class="card-title">1. 복제와 보존</div>
+                        <div class="zone analog-zone">
+                            <span class="zone-label">아날로그 방식</span>
+                            <svg class="analog-doc doc1" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            <svg class="analog-doc doc2" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            <svg class="analog-doc doc3" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            <span class="desc-label">복사할수록 열화/훼손됨</span>
                         </div>
-                        <div style="font-size: 2.2rem; color: #d2d2d7;">➜</div>
-                        <div class="flow-item">
-                            <svg viewBox="0 0 24 24" width="40" fill="#ff6b9d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                            <span style="font-weight:800; font-size:0.9rem; margin-top:10px;">우리 공동체의 자산</span>
+                        <div class="zone digital-zone">
+                            <span class="zone-label">디지털 방식</span>
+                            <svg class="digital-doc ddoc1" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            <svg class="digital-doc ddoc2" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            <svg class="digital-doc ddoc3" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            <span class="desc-label">원본 손상 없는 무한 복제</span>
                         </div>
                     </div>
-                </div>
 
+                    <div class="compare-card">
+                        <div class="card-title">2. 전송과 공유</div>
+                        <div class="zone analog-zone">
+                            <span class="zone-label">아날로그 방식</span>
+                            <svg class="analog-mail" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <span class="desc-label">물리적 이동 한계 (느림)</span>
+                        </div>
+                        <div class="zone digital-zone">
+                            <span class="zone-label">디지털 방식</span>
+                            <div class="digital-spark"></div>
+                            <div class="digital-spark"></div>
+                            <div class="digital-spark"></div>
+                            <span class="desc-label">빛의 속도로 즉시 전송</span>
+                        </div>
+                    </div>
+
+                    <div class="compare-card">
+                        <div class="card-title">3. 검색과 분석</div>
+                        <div class="zone analog-zone">
+                            <span class="zone-label">아날로그 방식</span>
+                            <svg class="analog-pile" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zM10 9h8v2h-8zm0 3h4v2h-4zm0-6h8v2h-8z"/></svg>
+                            <svg class="analog-mag" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                            <span class="desc-label">수동 검색 및 가공 불가</span>
+                        </div>
+                        <div class="zone digital-zone">
+                            <span class="zone-label">디지털 방식</span>
+                            <svg class="digital-gear" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                            <svg class="digital-chart" viewBox="0 0 24 24"><path d="M3 3v18h18V3H3zm6 14H7v-5h2v5zm4 0h-2v-9h2v9zm4 0h-2V7h2v10z"/></svg>
+                            <span class="desc-label">빠른 검색 및 빅데이터 분석</span>
+                        </div>
+                    </div>
+
+                </div>
                 <div class="word-score-container">
                     <div class="inline-tip" onclick="openTipPopup()">💡 팁</div>
                     <div class="word-bank">
-                        <div class="word-item">기록</div><div class="word-item">이미지</div>
-                        <div class="word-item">숫자</div><div class="word-item">원유</div>
-                        <div class="word-item">자산</div><div class="word-item">안전</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">기록</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">이미지</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">숫자</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">원유</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">자산</div>
+                        <div class="word-item" draggable="true" ondragstart="drag(event)">안전</div>
                     </div>
                     <div id="scoreBoard">SCORE: <span id="currentScore">0</span></div>
                 </div>
 
-                <!-- 🕵️ 모든 소스 번호가 제거된 깔끔한 문항과 복구된 힌트 박스 -->
-                <div class="quiz-box">1. 우리 주변의 모든 현상을 숫자, 문자, 영상 등으로 남기는 것을 <input type="text" class="blank" data-answer="기록" onkeyup="check(this)">이라고 합니다.</div>
-                <div class="quiz-box">2. 데이터는 우리 주변의 현상을 숫자, 문자, <input type="text" class="blank" data-answer="이미지" onkeyup="check(this)">, 영상 등으로 표현한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '그림이나 사진 정보를 말해요!')">힌트 💡</button><span class="hint-display"></span></div>
-                <div class="quiz-box">3. 현실의 정보를 컴퓨터가 인식하도록 <input type="text" class="blank" data-answer="숫자" onkeyup="check(this)"> 형태로 변환한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '0과 1로 처리되는 값이에요!')">힌트 💡</button><span class="hint-display"></span></div>
-                <div class="quiz-box">4. 데이터는 분석을 통해 에너지가 되는 21세기의 <input type="text" class="blank" data-answer="원유" onkeyup="check(this)">입니다.</div>
-                <div class="quiz-box">5. 일상 속의 다양한 데이터는 우리 사회를 발전시키는 소중한 <input type="text" class="blank" data-answer="자산" onkeyup="check(this)">입니다.</div>
-                <div class="quiz-box">6. 시민의 <input type="text" class="blank" data-answer="안전" onkeyup="check(this)">을 지키기 위해 누구나 자유롭게 활용하도록 개방된 데이터입니다.</div>
+                <div class="quiz-box">1. 우리 주변의 모든 현상을 숫자, 문자, 영상 등으로 남기는 것을 <input type="text" class="blank" data-answer="기록" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)">이라고 합니다.</div>
+                <div class="quiz-box">2. 데이터는 우리 주변의 현상을 숫자, 문자, <input type="text" class="blank" data-answer="이미지" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)">, 영상 등으로 표현한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '그림이나 사진 정보를 말해요!')">힌트 💡</button><span class="hint-display"></span></div>
+                <div class="quiz-box">3. 디지털 데이터는 현실의 정보를 컴퓨터가 인식하도록 <input type="text" class="blank" data-answer="숫자" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)"> 형태로 변환한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '0과 1로 처리되는 값이에요!')">힌트 💡</button><span class="hint-display"></span></div>
+                <div class="quiz-box">4. 데이터는 분석을 통해 에너지가 되는 21세기의 <input type="text" class="blank" data-answer="원유" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)">입니다.</div>
+                <div class="quiz-box">5. 일상 속의 다양한 데이터는 우리 사회를 발전시키는 소중한 <input type="text" class="blank" data-answer="자산" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)">입니다.</div>
+                <div class="quiz-box">6. 공공데이터는 시민의 <input type="text" class="blank" data-answer="안전" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)">을 지키기 위해 누구나 자유롭게 활용하도록 개방된 데이터입니다.</div>
             </div>
         </div>
 
@@ -174,23 +297,50 @@
 
     <div class="modal-overlay" id="modalOverlay"><div class="modal-content" id="modalContent"></div></div>
 
-    <footer>
+  
+   <footer>
         <div style="font-weight: 700; color: #1d1d1f;">데이터 네비게이터🧭</div>
-        <div style="color: var(--apple-gray);">&copy; 중학교 정보</div>
+        <div style="color: var(--apple-gray);">&copy; 중학교 정보 - 데이터 표현</div>
     </footer>
 
+
     <script>
+        // --- 교실 상태 알림판 ---
+        function setStatus(status) {
+            document.body.className = ''; 
+            if(status === 'help') document.body.classList.add('status-help');
+            if(status === 'done') document.body.classList.add('status-done');
+        }
+
         let score = 0; const scored = new Set();
+        
+        // ⭐ 입력 확인 로직 (타이핑이나 드롭 시 실행됨)
         function check(el) {
             if (el.value.trim() === el.getAttribute('data-answer') && !scored.has(el)) {
-                el.classList.add('correct'); el.disabled = true; scored.add(el); 
-                score += 16; if(score >= 96) score = 100;
+                el.classList.add('correct'); 
+                el.disabled = true; // 정답을 맞추면 더 이상 수정 못하게 잠금
+                scored.add(el); 
+                score += 16; 
+                if(score >= 96) score = 100; // 16 * 6 = 96 이므로 마지막엔 100으로 보정
                 document.getElementById('currentScore').innerText = score;
                 if(score === 100) showSuccess();
             }
         }
+
+        // ⭐ 드래그 앤 드롭 함수
+        function allowDrop(ev) { ev.preventDefault(); }
         
-        /* ⭐ 복구된 예쁜 힌트 토글 함수 */
+        function drag(ev) { 
+            ev.dataTransfer.setData("text", ev.target.innerText); 
+        }
+        
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            ev.target.value = data;
+            check(ev.target);
+        }
+        
         function toggleHint(btn, text) {
             const display = btn.nextElementSibling;
             if (display.style.display === 'none' || display.style.display === '') {
@@ -203,14 +353,18 @@
 
         function openTipPopup() {
             const content = document.getElementById('modalContent');
-            content.innerHTML = `<h3 style="color:var(--apple-blue);">💡 미션 가이드</h3><p style="line-height:1.8; text-align:left; padding:0 20px;">- 보기 상자에 있는 단어들을 빈칸에 입력해 보세요.<br>- 모든 정답을 맞히면 <strong>100점</strong>을 달성할 수 있습니다.<br>- 정답이 어려울 땐 <strong>'힌트'</strong> 버튼을 눌러보세요!</p><button onclick="closeModal()" style="width:100%; padding:14px; background:var(--apple-blue); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">확인</button>`;
+            content.innerHTML = `<h3 style="color:var(--apple-blue);">💡 미션 가이드</h3><p style="line-height:1.8; text-align:left; padding:0 20px;">- 보기 단어를 <b>마우스로 끌어서(PC)</b> 빈칸에 넣거나,<br>- 빈칸을 터치해 <b>직접 입력(스마트폰/태블릿)</b>해 보세요.<br>- 모든 정답을 맞히면 <strong>100점</strong>을 달성할 수 있습니다.<br>- 정답이 어려울 땐 <strong>'힌트'</strong> 버튼을 눌러보세요!</p><button onclick="closeModal()" style="width:100%; padding:14px; background:var(--apple-blue); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">확인</button>`;
             document.getElementById('modalOverlay').style.display = 'flex';
         }
+
         function showSuccess() {
             const content = document.getElementById('modalContent');
             content.innerHTML = `<div style="font-size:3rem; margin-bottom:15px;">🕵️‍♂️✨</div><h2 style="color:var(--apple-blue);">탐정 미션 완료!</h2><p>오늘 배운 데이터의 가치를 잊지 마세요!<br>소감문을 캡처하여 증거로 남겨보세요!</p><button onclick="closeModal()" style="width:100%; padding:14px; background:var(--apple-blue); color:white; border:none; border-radius:12px; font-weight:700; cursor:pointer;">닫기</button>`;
             document.getElementById('modalOverlay').style.display = 'flex';
+            
+            setStatus('done'); 
         }
+
         function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
     </script>
 </body>
