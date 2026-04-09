@@ -148,6 +148,7 @@
         z-index: 50;
         will-change: left, top;
         transform: translate(-50%, -50%);
+        transition: box-shadow 0.2s ease;
     }
 
     /* 구역 */
@@ -201,6 +202,13 @@
     @keyframes floatUp {
         0% { transform: translateY(0) scale(1); opacity: 1; }
         100% { transform: translateY(-60px) scale(1.6); opacity: 0; }
+    }
+
+    /* 폭발 이펙트 */
+    @keyframes popExplosion {
+        0% { transform: translate(-50%, -50%) scale(0.2); opacity: 1; }
+        50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; filter: drop-shadow(0 0 20px #ff0844); }
+        100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
     }
 
     /* 화면 흔들림 */
@@ -336,6 +344,7 @@
     <br>
     <span style="color:#fbbf24; font-weight:900; font-size:18px;">🔥 콤보 달성 시 2의 지수승(2배씩)으로 점수가 폭발합니다!</span><br>
     <span style="color:#ff0844; font-weight:900; font-size:18px;">⚠️ 폭탄에 닿으면 현재 점수의 2배가 감점되니 조심하세요!</span><br>
+    <span style="color:#00f2fe; font-weight:900; font-size:18px;">🚨 한곳에 4초 이상 멈춰있으면 폭탄이 터지며 100점 감점! (캠핑 금지)</span><br>
     <br>
     <button onclick="startGame()">도전 시작!</button>
 </div>
@@ -390,6 +399,12 @@ let keys = {};
 let carriedCard = null;
 let cards = []; 
 
+// 안티 캠핑(Anti-Camping) 시스템 변수
+let lastLoopTime = Date.now();
+let lastStayX = pX;
+let lastStayY = pY;
+let stayTimer = 0;
+
 // 키보드 리스너
 window.addEventListener("keydown", (e) => { keys[e.code] = true; });
 window.addEventListener("keyup", (e) => { keys[e.code] = false; });
@@ -429,6 +444,7 @@ function closeModal() {
         modal.style.display = 'none';
         if (time > 0 && document.getElementById("memo").style.display === "none") {
             isPlaying = true;
+            lastLoopTime = Date.now(); // 일시정지 후 시간 튀는 현상 방지
             requestAnimationFrame(gameLoop);
         }
     }, 300);
@@ -440,10 +456,29 @@ function startGame() {
     document.getElementById("memo").style.display = "none";
     if(!isPlaying) {
         isPlaying = true;
+        lastLoopTime = Date.now();
+        lastStayX = window.innerWidth / 2;
+        lastStayY = window.innerHeight / 2;
         spawnCards(8); 
         requestAnimationFrame(gameLoop);
         timerInterval = setInterval(updateTime, 1000);
     }
+}
+
+// 폭발 이펙트 함수
+function showExplosion(x, y) {
+    let el = document.createElement("div");
+    el.innerText = "💥";
+    el.style.position = "absolute";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.transform = "translate(-50%, -50%)";
+    el.style.fontSize = "100px";
+    el.style.zIndex = "1000";
+    el.style.pointerEvents = "none";
+    el.style.animation = "popExplosion 0.5s ease-out forwards";
+    game.appendChild(el);
+    setTimeout(() => el.remove(), 500);
 }
 
 // 아이템 생성
@@ -495,6 +530,10 @@ function showFloatingText(text, x, y, color) {
 function gameLoop() {
     if(!isPlaying) return;
 
+    let now = Date.now();
+    let dt = now - lastLoopTime;
+    lastLoopTime = now;
+
     if (keys["ArrowLeft"]) pX -= speed;
     if (keys["ArrowRight"]) pX += speed;
     if (keys["ArrowUp"]) pY -= speed;
@@ -505,6 +544,42 @@ function gameLoop() {
 
     player.style.left = pX + "px";
     player.style.top = pY + "px";
+
+    // ⭐ 안티 캠핑 시스템 (한 곳에 머무르는 것 방지)
+    // 위치가 30픽셀 이상 변했는지 체크
+    if (Math.abs(pX - lastStayX) > 30 || Math.abs(pY - lastStayY) > 30) {
+        lastStayX = pX;
+        lastStayY = pY;
+        stayTimer = 0;
+        player.style.boxShadow = "0 0 30px rgba(255,255,255,0.4)"; // 시각 효과 원상 복구
+    } else {
+        stayTimer += dt;
+        
+        // 2초 이상 머물면 그림자 붉은색으로 펄스 경고
+        if (stayTimer > 2000) {
+            let intensity = Math.min(1, (stayTimer - 2000) / 2000);
+            player.style.boxShadow = `0 0 ${30 + intensity*20}px rgba(255, 8, 68, ${0.4 + intensity*0.6})`;
+        }
+        
+        // 4초 이상 머물면 폭발 패널티
+        if (stayTimer >= 4000) {
+            stayTimer = 0;
+            lastStayX = pX; 
+            lastStayY = pY;
+            player.style.boxShadow = "0 0 30px rgba(255,255,255,0.4)";
+            
+            score -= 100;
+            combo = 0;
+            
+            scoreEl.innerText = score;
+            comboEl.innerText = "";
+            showFloatingText("-100 (캠핑 금지!)", pX - 50, pY - 80, "#ff0844");
+            showExplosion(pX, pY);
+            
+            document.body.classList.add("shake");
+            setTimeout(() => document.body.classList.remove("shake"), 400);
+        }
+    }
 
     let pRect = player.getBoundingClientRect();
 
@@ -535,7 +610,6 @@ function gameLoop() {
             if (pRect.left < cRect.right && pRect.right > cRect.left &&
                 pRect.top < cRect.bottom && pRect.bottom > cRect.top) {
                 
-                // ⭐ 폭탄 충돌 시: 점수의 2배 감점
                 if(card.dataset.type === "bomb") {
                     let penalty = Math.max(20, score * 2); // 0점 이하일 때도 기본 20점 깎이도록 방어코드
                     score -= penalty;
@@ -544,6 +618,7 @@ function gameLoop() {
                     comboEl.innerText = "";
                     scoreEl.innerText = score;
                     showFloatingText(`-${penalty}`, pX, pY - 80, "#ff0844");
+                    showExplosion(pX, pY);
                     
                     document.body.classList.add("shake");
                     setTimeout(() => document.body.classList.remove("shake"), 400);
@@ -586,7 +661,7 @@ function gameLoop() {
             
             if (isCorrect) {
                 combo++;
-                // ⭐ 콤보 계산: 10 * 2^(combo-1) (10, 20, 40, 80...)
+                // 콤보 계산: 10 * 2^(combo-1)
                 let earned = 10 * Math.pow(2, combo - 1); 
                 score += earned;
                 
