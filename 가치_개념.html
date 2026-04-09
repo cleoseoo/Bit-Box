@@ -170,16 +170,14 @@
         .answer-box { display: none; padding: 15px; font-size: 0.85rem; color: #424245; font-weight: 600; border-top: 1px dashed rgba(0,113,227,0.2); }
         .answer-box ul { margin: 0; padding-left: 20px; line-height: 1.8; }
 
-        /* ⭐ 하단 스텝 이동 네비게이션 (소리 개념 파일 원본 복구) */
         .step-navigation { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 25px; padding-top: 20px; border-top: 2px dashed #e5e5e7; }
         .nav-arrow { display: inline-flex; align-items: center; gap: 8px; color: var(--apple-blue); font-weight: 900; font-size: 1.05rem; cursor: pointer !important; transition: 0.2s; padding: 10px 15px; border-radius: 12px; }
-        .nav-arrow:hover { background: #f1f7ff; } /* 파란 네모 배경 효과 복구 */
+        .nav-arrow:hover { background: #f1f7ff; } 
         .nav-arrow:active { transform: translateY(1px); }
         .nav-arrow svg { width: 30px; height: 30px; fill: var(--apple-blue); }
         .nav-arrow.next { margin-left: auto; }
         .nav-arrow.prev { margin-right: auto; }
 
-        /* ⭐ 키워드 숨김 버튼 스타일 (예쁜 인디고-퍼플 그라데이션) */
         .pill-btn {
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
@@ -419,7 +417,9 @@
                     
                     <div class="quiz-box">2. 우리 주변의 모든 현상을 숫자, 문자, 영상 등으로 남기는 것을 <input type="text" class="blank" data-answer="기록" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off">이라고 합니다.</div>
                     <div class="quiz-box">3. 데이터는 우리 주변의 현상을 숫자, 문자, <input type="text" class="blank" data-answer="이미지" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off">, 영상 등으로 표현한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '그림이나 사진 정보를 말해요!')">힌트 💡</button><span class="hint-display"></span></div>
-                    <div class="quiz-box">4. 디지털 데이터는 현실의 정보를 컴퓨터가 인식하도록 <input type="text" class="blank" data-answer="숫자" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off"> 형태로 변환한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '0과 1로 처리되는 값이에요!')">힌트 💡</button><span class="hint-display"></span></div>
+                    
+                    <div class="quiz-box">4. 디지털 데이터는 현실의 다양한 정보를 컴퓨터가 처리할 수 있도록 0과 1의 불연속적인 <input type="text" class="blank" data-answer="숫자" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off"> 형태로 변환한 것입니다. <button class="hint-btn" onclick="toggleHint(this, '0과 1로 이루어져 있어요!')">힌트 💡</button><span class="hint-display"></span></div>
+                    
                     <div class="quiz-box">5. 데이터는 분석을 통해 에너지가 되는 21세기의 <input type="text" class="blank" data-answer="원유" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off">입니다.</div>
                     <div class="quiz-box">6. 일상 속의 다양한 데이터는 우리 사회를 발전시키는 소중한 <input type="text" class="blank" data-answer="자산" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off">입니다.</div>
                     <div class="quiz-box" style="margin-bottom: 0;">7. 공공데이터는 시민의 <input type="text" class="blank" data-answer="안전" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off">을 지키기 위해 누구나 자유롭게 활용하도록 개방된 데이터입니다.</div>
@@ -481,7 +481,6 @@
             }
         }
 
-        // ⭐ 가림 버튼 해제 함수
         function revealInline(btn, text, color = '#0071e3') {
             const span = document.createElement('span');
             span.style.color = color;
@@ -524,7 +523,10 @@
             }, 400);
         }
 
-        let score = 0; const scored = new Set();
+        // ⭐ 점수 계산 로직 수정 (총 7문제 기준 정확히 배분)
+        let correctAnswers = 0; 
+        const totalQuestions = 8; // 1번 문제에 빈칸이 2개이므로, 채워야 할 총 빈칸 수는 8개입니다.
+        const scored = new Set();
         
         function check(el) {
             if (el.value.trim() === el.getAttribute('data-answer') && !scored.has(el)) {
@@ -532,9 +534,15 @@
                 el.disabled = true;
                 scored.add(el); 
                 
-                score += 14.28; // 7문제 기준
-                let displayScore = Math.round(score);
-                if(displayScore >= 99) displayScore = 100;
+                correctAnswers++;
+                
+                // 모든 문제를 맞혔을 때만 100점, 그 외에는 (맞힌 개수 / 총 개수) * 100
+                let displayScore = 0;
+                if (correctAnswers === totalQuestions) {
+                    displayScore = 100;
+                } else {
+                    displayScore = Math.floor((correctAnswers / totalQuestions) * 100); 
+                }
                 
                 document.getElementById('currentScore').innerText = displayScore;
                 
