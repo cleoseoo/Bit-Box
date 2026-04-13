@@ -43,7 +43,7 @@
     .stage.active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* --- Stage 1~4 공통 요소 --- */
+    /* --- Stage 1~3 공통 요소 --- */
     #stage1 { cursor: pointer; } 
     .switch-btn { width: 150px; height: 150px; border-radius: 50%; background: #111; border: 4px solid #333; color: #555; font-family: 'Orbitron'; font-size: 60px; font-weight: 900; display: flex; align-items: center; justify-content: center; transition: all 0.3s; pointer-events: none; }
     .switch-btn.on { background: rgba(0, 242, 254, 0.1); border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: 0 0 50px rgba(0, 242, 254, 0.5); text-shadow: 0 0 20px var(--neon-blue); }
@@ -51,30 +51,79 @@
     .byte-result { font-size: 100px; font-weight: 900; color: #fff; text-shadow: 0 0 30px #fff; opacity: 0; transform: scale(0.5); transition: all 0.5s; margin-top: 20px; } .byte-result.show { opacity: 1; transform: scale(1); }
     .grid-container { display: grid; grid-template-columns: repeat(8, 40px); grid-template-rows: repeat(8, 40px); gap: 2px; background: #111; padding: 5px; border: 2px solid #333; border-radius: 10px; }
     .pixel { width: 40px; height: 40px; background: #000; font-size: 14px; display: flex; align-items: center; justify-content: center; color: transparent; cursor: pointer; transition: 0.2s; font-family: 'Orbitron'; } 
-    .pixel.explored.filled { background: #ff0844; color: transparent; box-shadow: 0 0 10px #ff0844; }
+    .pixel.explored.filled { background: #ff0844; color: white; box-shadow: 0 0 10px #ff0844; }
     .pixel.explored.empty { background: #222; color: #555; }
     
-    .big-data-btn { padding: 20px 40px; font-size: 24px; font-weight: 900; color: #050505; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; }
-    #final-bg { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop'); background-size: cover; opacity: 0; z-index: 1; transition: opacity 3s; pointer-events: none; }
-    #matrix-canvas { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 2; opacity: 0; pointer-events: none; }
-    .final-message { position: absolute; z-index: 10; text-align: center; opacity: 0; transition: opacity 2s; background: rgba(0,0,0,0.7); padding: 40px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); }
     .next-btn { margin-top: 40px; padding: 12px 30px; font-size: 16px; font-weight: 700; color: white; background: transparent; border: 2px solid white; border-radius: 8px; cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s; z-index: 50; } .next-btn.show { opacity: 1; pointer-events: auto; } .next-btn:hover { background: white; color: black; }
     
+    /* --- ✨ Stage 4: 고급 SVG 네트워크 연출 CSS ✨ --- */
+    .network-container { position: relative; width: 600px; height: 400px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+
+    /* SVG 아이콘 공통 속성 */
+    .svg-icon { width: 100%; height: 100%; fill: currentColor; }
+
+    /* 중앙 빅데이터 코어 */
+    .data-core { width: 80px; height: 80px; background: rgba(255,255,255,0.1); border-radius: 50%; box-shadow: 0 0 30px var(--neon-blue), inset 0 0 20px var(--neon-purple); border: 2px solid var(--neon-blue); position: relative; z-index: 10; transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; align-items: center; justify-content: center; color: var(--neon-blue); }
+    .data-core svg { width: 40px; height: 40px; }
+    
+    .data-core.expand { width: 160px; height: 160px; box-shadow: 0 0 100px var(--neon-blue), 0 0 150px var(--neon-purple); background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); color: white; border: none; font-family: 'Orbitron'; font-size: 24px; font-weight: 900; }
+    .data-core.expand svg { display: none; } /* 코어 확장 시 텍스트로 전환하기 위함 */
+
+    /* 주변에서 모여드는 데이터 소스 아이콘 */
+    .source-icon { position: absolute; width: 40px; height: 40px; color: #fff; opacity: 1; transition: all 1.2s ease-in-out; z-index: 5; text-align: center; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+    .source-icon.absorb { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) scale(0.1); opacity: 0; filter: blur(5px); color: var(--neon-blue); }
+
+    /* 뻗어나가는 광케이블 선 (오류 수정됨) */
+    .optic-line { 
+        position: absolute; 
+        top: 50%; 
+        left: 50%; 
+        height: 3px; 
+        width: 0; 
+        background: var(--neon-blue); 
+        box-shadow: 0 0 15px var(--neon-blue); 
+        z-index: 1; 
+        transform-origin: 0 50%; 
+        transition: width 1s ease-out, opacity 1s ease-out; 
+        opacity: 0; 
+        margin-top: -1.5px; /* 정확한 중앙 정렬 */
+    }
+    .line-top-left { transform: rotate(-148deg); }
+    .line-top-right { transform: rotate(-32deg); }
+    .line-bottom-left { transform: rotate(148deg); }
+    .line-bottom-right { transform: rotate(32deg); }
+    .optic-line.shoot { opacity: 1; width: 315px; } /* 네모 박스의 정중앙까지 도달하는 길이 */
+
+    /* 세상의 변화 노드 (스마트시티 등) */
+    .world-node { position: absolute; width: 90px; height: 90px; background: rgba(0,0,0,0.8); border: 2px solid #333; border-radius: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: all 0.5s ease-out; transform: scale(0.5); z-index: 5; color: #555; }
+    .world-node .icon { width: 35px; height: 35px; margin-bottom: 8px; transition: 0.5s; }
+    .world-node .label { font-size: 11px; font-weight: bold; font-family: 'Pretendard'; white-space: nowrap; text-align: center; line-height: 1.3; transition: 0.5s;}
+
+    /* 노드 활성화 상태 */
+    .world-node.active { opacity: 1; transform: scale(1); border-color: var(--neon-yellow); background: rgba(252, 226, 5, 0.1); box-shadow: 0 0 30px rgba(252, 226, 5, 0.4); color: var(--neon-yellow); }
+
+    /* 노드 고정 위치 */
+    .node-tl { top: -10px; left: -10px; }
+    .node-tr { top: -10px; right: -10px; }
+    .node-bl { bottom: -10px; left: -10px; }
+    .node-br { bottom: -10px; right: -10px; }
+
+    #bridge-text { margin-top: 20px; font-size: 20px; line-height: 1.8; color: #ddd; opacity: 1; transition: opacity 0.5s; min-height: 100px; text-align: center; }
+
+    .big-data-btn { padding: 15px 40px; font-size: 20px; font-weight: 900; color: #050505; background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; margin-top: 20px;}
+    .big-data-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(0, 242, 254, 0.6); }
+
     /* --- Stage 5: 네트워크 링크 게임 CSS --- */
     #game-layout { display: flex; align-items: flex-start; justify-content: center; width: 1200px; height: 550px; margin-top: 20px; gap: 20px; position: relative; }
-
-    /* 좌/우 컴퓨터 화면 */
     .pc-monitor { width: 380px; min-height: 280px; height: auto; background: #1a1a2e; border: 12px solid #222; border-radius: 15px; position: relative; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0,0,0,0.8); z-index: 20; }
     .pc-monitor::after { content: ''; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 80px; height: 28px; background: #222; border-radius: 2px; }
     .pc-screen { flex: 1; background: #0f172a; margin: 8px; border-radius: 8px; border: 2px solid #334155; padding: 20px; overflow: hidden; display: flex; flex-direction: column; min-height: 180px;}
     .pc-header { font-family: 'Pretendard'; font-size: 16px; font-weight: bold; text-align: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
     
-    /* 왼쪽 (송신자) */
     .sender-screen { color: white; font-family: 'Pretendard', sans-serif; font-size: 26px; font-weight: bold; }
     .bubble-send { background: var(--neon-purple); color: white; padding: 10px 15px; border-radius: 15px 15px 0 15px; display: inline-block; margin-top: 10px; max-width: 90%; word-break: break-all; box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);}
     .highlight-char { background: var(--neon-yellow); color: black; border-radius: 3px; padding: 0 2px; }
 
-    /* 오른쪽 (수신자) */
     .receiver-screen { color: white; font-family: 'Pretendard', sans-serif; font-size: 26px; font-weight: bold; position: relative;}
     .bubble-recv { background: #334155; color: white; padding: 10px 15px; border-radius: 15px 15px 15px 0; display: inline-block; margin-top: 10px; max-width: 90%; word-break: break-all; transition: 0.3s;}
     .bubble-recv.complete { background: var(--neon-green); color: black; box-shadow: 0 0 20px rgba(0,255,102,0.5); }
@@ -82,10 +131,8 @@
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
     #corrupt-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--neon-red); font-weight: bold; text-shadow: 0 0 10px var(--neon-red); display: none; font-family: 'Orbitron'; font-size: 22px; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 10px;}
 
-    /* 수신기 하단 컨트롤 패널 */
     #receiver-controls { display: none; background: #0f172a; margin: 0 8px 8px 8px; border-radius: 8px; border: 2px solid var(--neon-green); padding: 20px; text-align: center; animation: fadeIn 0.5s ease-out; box-shadow: inset 0 0 15px rgba(0,255,102,0.2); }
 
-    /* 중앙 광케이블 플레이 영역 */
     #play-area { width: 400px; height: 500px; position: relative; background: #0a0a1a; border-top: 4px solid #222; border-bottom: 4px solid #222; overflow: hidden; }
     #game-canvas { display: block; width: 100%; height: 100%; }
     #game-hud { position: absolute; top: -40px; left: 0; width: 100%; display: flex; justify-content: center; font-family: 'Orbitron'; font-size: 22px; font-weight: bold; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
@@ -94,17 +141,14 @@
     .bit-miss { color: var(--neon-red); }
     .bit-hit { color: var(--neon-green); }
 
-    /* 오버레이 (대기/결과) */
     .game-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(3px); }
     #ready-screen p { color: #ccc; font-size: 16px; margin: 5px 0; }
     .key-box { display: inline-block; background: #333; padding: 5px 15px; border-radius: 5px; color: var(--neon-blue); font-family: 'Orbitron'; margin: 0 5px; }
     #countdown-screen { font-size: 100px; font-family: 'Orbitron'; font-weight: 900; color: var(--neon-yellow); text-shadow: 0 0 30px var(--neon-yellow); }
 
-    /* 문장 및 속도 선택 드롭다운 */
     .neon-select { background: #0f172a; color: var(--neon-blue); border: 2px solid var(--neon-blue); padding: 10px 15px; border-radius: 8px; font-family: 'Orbitron', 'Pretendard', sans-serif; font-size: 16px; font-weight: bold; outline: none; cursor: pointer; width: 100%; text-align: center; }
     .neon-select option { background: #0f172a; color: white; }
 
-    /* 하단 완료 토스트 메시지 */
     #bottom-toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); color: #fff; padding: 15px 40px; border-radius: 30px; font-family: 'Pretendard', sans-serif; font-size: 20px; font-weight: bold; box-shadow: 0 0 30px rgba(0, 242, 254, 0.6); transition: bottom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 9999; display: flex; align-items: center; gap: 20px; }
     #bottom-toast.show { bottom: 40px; }
 
@@ -114,27 +158,24 @@
 
 <div id="manual-modal" class="modal-overlay">
     <div class="modal-box">
-        <h2>📖 게임 설명서</h2>
-        <p style="color:white; font-size:18px; margin-bottom: 20px;">단 1개의 비트가 거대한 우주가 되는 과정을 체험하세요.</p>
+        <h2>📖 체험 설명서</h2>
+        <p style="color:white; font-size:18px; margin-bottom: 20px;">단 1개의 비트가 모여 거대한 <빅데이터>가 되는 과정을 체험하세요.</p>
         <ul>
             <li><b>1단계 (1 Bit):</b> 스페이스바를 눌러 스위치를 켭니다.</li>
             <li><b>2단계 (1 Byte):</b> 숫자 <b>0과 1</b>을 8번 눌러 문자를 창조합니다.</li>
             <li><b>3단계 (64 Bits):</b> 검은 타일 위를 문질러 이미지를 만듭니다.</li>
-            <li><b>최종 단계:</b> 두 컴퓨터를 연결하는 <b style="color:var(--neon-blue);">[광통신 네트워크]</b> 훈련이 시작됩니다!</li>
+            <li><b>최종 단계:</b> 두 컴퓨터를 연결하는 <b style="color:var(--neon-blue);">[광통신 네트워크]</b> 수신기가 되어보는 체험을 합니다!</li>
         </ul>
-        <button class="start-btn" onclick="startGame()">시스템 가동</button>
+        <button class="start-btn" onclick="startGame()">체험 시스템 가동</button>
     </div>
 </div>
-
-<div id="final-bg"></div>
-<canvas id="matrix-canvas"></canvas>
 
 <div class="header" id="header">
     <div class="title">DATA EVOLUTION</div>
 </div>
 
 <div class="stage" id="stage1">
-    <p style="margin-bottom: 30px; font-size: 18px; color: #ccc;">가장 작은 정보의 단위, 1비트입니다.<br>화면을 <b>클릭</b>하거나 <b>스페이스바</b>를 눌러보세요.</p>
+    <p style="margin-bottom: 30px; font-size: 18px; color: #ccc;">가장 작은 디지털 정보의 단위, 1비트입니다.<br>화면을 <b>클릭</b>하거나 <b>스페이스바</b>를 눌러보세요.</p>
     <div class="switch-btn" id="s1-btn">0</div>
     <button class="next-btn" id="s1-next" onclick="goStage(2)">진화하기 →</button>
 </div>
@@ -142,8 +183,8 @@
 <div class="stage" id="stage2">
     <p style="margin-bottom: 30px; font-size: 18px; color: #ccc; line-height: 1.6;">
         가장 작은 단위인 <b>비트(Bit) 8개</b>가 모이면 <b>1바이트(Byte)</b>가 됩니다.<br>
-        컴퓨터는 이 8자리 이진수로 문자를 표현하기로 약속했는데, 이를 <b>아스키코드(ASCII)</b>라고 부릅니다.<br>
-        자, 키보드 <b>숫자 0</b> 과 <b>1</b> 을 8번 눌러서 어떤 문자가 탄생하는지 직접 확인해 보세요!
+        대표적인 예) 8자리 이진수를 한 개의 문자로 표현하는 약속, 이를 <b>아스키코드(ASCII)</b>라고 부릅니다.<br>
+        알파벳 <b>'A'</b>에 해당하는 아스키코드 이진수 <b style="color:var(--neon-blue); font-size:24px; letter-spacing:2px;">01000001</b> 을 순서대로 입력해 보세요!
     </p>
     <div class="byte-container" id="s2-slots"></div>
     <div class="byte-result" id="s2-result">A</div>
@@ -154,23 +195,58 @@
 <div class="stage" id="stage3">
     <p style="margin-bottom: 20px; font-size: 18px; color: #ccc; line-height: 1.6;">64개의 비트(8x8)가 모였습니다.<br>마우스로 복권을 긁듯 검은 타일 전체를 <b>문질러서</b><br>데이터가 어떤 모양을 하고 있는지 확인해 보세요!</p>
     <div class="grid-container" id="s3-grid"></div>
-    <button class="next-btn" id="s3-next" onclick="goStage(4)">궁극의 진화 →</button>
+    <button class="next-btn" id="s3-next" onclick="goStage(4)">비트의 빅데이터로의 진화 →</button>
 </div>
 
 <div class="stage" id="stage4">
-    <p style="margin-bottom: 40px; font-size: 20px; color: #ccc; line-height: 1.6;">단순한 문자와 작은 그림을 넘어,<br>수천만 개의 비트가 폭발적으로 모이면 어떤 일이 일어날까요?</p>
-    <button class="big-data-btn" onclick="triggerBigBang()">초거대 데이터 다운로드 (1GB)</button>
-</div>
+    <h2 style="font-family:'Orbitron'; color:var(--neon-blue); font-size:30px; margin-bottom:10px;">세상을 움직이는 거대한 데이터</h2>
+    
+    <div class="network-container">
+        <div class="optic-line line-top-left"></div>
+        <div class="optic-line line-top-right"></div>
+        <div class="optic-line line-bottom-left"></div>
+        <div class="optic-line line-bottom-right"></div>
 
-<div class="final-message" id="final-msg" style="display:none;">
-    <h1 style="font-size: 40px; margin-bottom: 20px; color: white;">네트워크 통신: 단 1비트의 오류도 없이</h1>
-    <p style="font-size: 20px; color: #ddd; line-height: 1.8;">
-        우리가 친구에게 SNS 메신저로 편지를 보낼 때,<br>
-        컴퓨터와 스마트폰 사이에는 0과 1의 전기 신호가 폭풍처럼 쏟아집니다.<br><br>
-        이제 여러분이 직접 광케이블이 되어,<br>
-        친구에게 보내는 소중한 메시지를 <b>'정확하게'</b> 전달해 보세요!
-    </p>
-    <button class="next-btn show" style="margin-top: 30px; border-color: var(--neon-blue); color: var(--neon-blue);" onclick="startStage5()">실전: SNS 네트워크 접속 🚀</button>
+        <div class="world-node node-tl">
+            <div class="icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg></div>
+            <div class="label">인공지능<br>의료</div>
+        </div>
+        <div class="world-node node-tr">
+            <div class="icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>
+            <div class="label">자율주행<br>자동차</div>
+        </div>
+        <div class="world-node node-bl">
+            <div class="icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M15 11V5l-3-3-3 3v2H3v14h18V11h-6zm-8 8H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V9h2v2zm6 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V9h2v2zm0-4h-2V5h2v2zm6 12h-2v-2h2v2zm0-4h-2v-2h2v2z"/></svg></div>
+            <div class="label">스마트<br>시티</div>
+        </div>
+        <div class="world-node node-br">
+            <div class="icon"><svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg></div>
+            <div class="label">글로벌<br>네트워크</div>
+        </div>
+
+        <div class="data-core" id="core-orb">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+        </div>
+
+        <div class="source-icon" id="src1" style="top: 20px; left: 250px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+        <div class="source-icon" id="src2" style="bottom: 20px; left: 250px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M4 4h3l2-2h6l2 2h3c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm10 13c3.31 0 6-2.69 6-6s-2.69-6-6-6-6 2.69-6 6 2.69 6 6 6zm0-10c2.21 0 4 1.79 4 4s-1.79 4-4 4-4-1.79-4-4 1.79-4 4-4z"/></svg>
+        </div>
+        <div class="source-icon" id="src3" style="top: 150px; left: 80px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+        </div>
+        <div class="source-icon" id="src4" style="top: 150px; right: 80px;">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        </div>
+    </div>
+
+    <div id="bridge-text">
+        여러분이 방금 만든 작은 데이터는 세상에 홀로 존재하지 않습니다.<br>세상의 다양한 데이터들과 어떻게 융합되는지 확인해 보세요.
+    </div>
+
+    <button class="big-data-btn" id="evolve-btn" onclick="stepEvolution()">데이터 융합하기</button>
 </div>
 
 <div class="stage" id="stage5" style="z-index: 100;">
@@ -203,6 +279,7 @@
                 
                 <div style="width: 80%; text-align: left;">
                     <select id="msg-select" class="neon-select" style="margin-top: 10px; margin-bottom: 5px;">
+                         <option>*** 메시지 선택 ***</option>
                         <option value="0">I LOVE YOU (10글자)</option>
                         <option value="1">BE HAPPY! (9글자)</option>
                         <option value="2">GOOD LUCK! (10글자)</option>
@@ -211,8 +288,9 @@
                     </select>
                     
                     <select id="speed-select" class="neon-select" style="margin-top: 5px; margin-bottom: 20px;">
+        		<option>*** 데이터 전송 속도 선택 ***</option>
                         <option value="2.5">데이터 전송 속도: 느림 🐢</option>
-                        <option value="4.0" selected>데이터 전송 속도: 보통 🏃</option>
+                        <option value="4.0">데이터 전송 속도: 보통 🏃</option>
                         <option value="6.0">데이터 전송 속도: 빠름 🚀</option>
                     </select>
                 </div>
@@ -257,13 +335,6 @@
 <script>
     let currentStage = 0;
 
-    function startStage5() {
-        document.getElementById('final-msg').style.display = 'none';
-        document.getElementById('final-bg').style.display = 'none';
-        document.getElementById('header').style.opacity = 1;
-        goStage(5);
-    }
-
     function startGame() {
         document.getElementById('manual-modal').style.display = 'none';
         document.getElementById('header').style.display = 'block';
@@ -277,7 +348,7 @@
         if(num === 2) initStage2(); if(num === 3) initStage3(); if(num === 5) initReadyScreen(); 
     }
 
-    // --- Stage 1~4 로직 ---
+    // --- Stage 1~3 로직 ---
     function toggleBit() {
         let btn = document.getElementById('s1-btn');
         if(btn.innerText === "0") { btn.innerText = "1"; btn.classList.add('on'); document.getElementById('s1-next').classList.add('show'); } 
@@ -304,7 +375,6 @@
                 let charValue = "";
                 let isPrintable = true;
 
-                // 아스키코드표 매핑 및 예외 처리
                 if(decimalValue >= 33 && decimalValue <= 126) {
                     charValue = String.fromCharCode(decimalValue);
                 } else if(decimalValue === 32) {
@@ -332,7 +402,6 @@
         }
     }
 
-    // 3단계 하트 배열 (1: 빨강, 0: 배경)
     const heartPattern = [
         0,1,1,0,0,1,1,0, 
         1,1,1,1,1,1,1,1, 
@@ -352,15 +421,13 @@
             let px = document.createElement('div'); 
             px.className = 'pixel'; 
             px.innerText = "0"; 
-            // 마우스 호버 시 픽셀 상태 밝히기
             px.addEventListener('mouseover', ()=>explorePixel(i,px)); 
             document.getElementById('s3-grid').appendChild(px); 
         }
     }
     
-    // 3단계 버그 수정 (어디든 긁으면 데이터 확인 가능)
     function explorePixel(i, el) {
-        if(el.classList.contains('explored')) return; // 이미 밝혀진 타일 무시
+        if(el.classList.contains('explored')) return; 
         
         el.classList.add('explored');
         if(heartPattern[i]===1) { 
@@ -372,25 +439,75 @@
         }
         
         pixelsExplored++;
-        // 64개 픽셀(전체 화면)을 모두 확인하면 성공!
         if(pixelsExplored >= 64) { 
             document.getElementById('s3-next').classList.add('show'); 
         }
     }
 
-    function triggerBigBang() {
-        document.getElementById('header').style.opacity = 0; document.getElementById('stage4').style.display = 'none';
-        const mCanvas = document.getElementById('matrix-canvas'); mCanvas.style.opacity = 1; startMatrixRain(mCanvas);
-        setTimeout(() => { mCanvas.style.opacity = 0; document.getElementById('final-bg').style.opacity = 1; setTimeout(() => { let msg = document.getElementById('final-msg'); msg.style.display = 'block'; void msg.offsetWidth; msg.style.opacity = 1; }, 1000); }, 3000);
-    }
-    
-    function startMatrixRain(canvas) {
-        const ctx = canvas.getContext('2d'); canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "01"; const fontSize = 16; const drops = []; for(let x=0; x<canvas.width/fontSize; x++) drops[x]=1;
-        let matrixInterval = setInterval(() => {
-            ctx.fillStyle = "rgba(0,0,0,0.1)"; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle = "#00f2fe"; ctx.font = fontSize+"px Orbitron";
-            for(let i=0; i<drops.length; i++) { ctx.fillText(letters.charAt(Math.floor(Math.random()*2)), i*fontSize, drops[i]*fontSize); if(drops[i]*fontSize > canvas.height && Math.random()>0.97) drops[i]=0; drops[i]++; }
-        }, 30); setTimeout(()=>clearInterval(matrixInterval), 4000);
+    // ✨ Stage 4: 클릭 시 진행되는 진화 로직 ✨
+    let evolutionStep = 0;
+
+    function stepEvolution() {
+        const btn = document.getElementById('evolve-btn');
+        const textEl = document.getElementById('bridge-text');
+        const orb = document.getElementById('core-orb');
+
+        if (evolutionStep === 0) {
+            // STEP 1: 데이터 융합 (아이콘 빨아들이기 & 코어 팽창)
+            textEl.style.opacity = 0;
+            setTimeout(() => {
+                textEl.innerHTML = "문자, 이미지, 동영상의 무수히 많은 0과 1이 융합되어<br><b style='color:var(--neon-purple); font-size:24px;'>'빅데이터(BIG DATA)'</b>로 거대하게 진화했습니다!";
+                textEl.style.opacity = 1;
+                
+                // SVG 아이콘들이 이진수로 변하며 흡수됨
+                for(let i=1; i<=4; i++) {
+                    let src = document.getElementById('src' + i);
+                    src.innerHTML = "0110"; 
+                    src.style.fontFamily = "Orbitron";
+                    src.style.fontSize = "20px";
+                    src.style.fontWeight = "bold";
+                    src.classList.add('absorb');
+                }
+
+                // 코어 팽창
+                setTimeout(() => {
+                    orb.classList.add('expand');
+                    orb.innerHTML = "BIG DATA<br><span style='font-size:12px; font-weight:normal; letter-spacing:1px;'>1,000,000,000 Bits</span>";
+                }, 800);
+
+                btn.innerText = "세상과 연결하기";
+            }, 500);
+            evolutionStep++;
+        }
+        else if (evolutionStep === 1) {
+            // STEP 2: 세상과 연결 (광케이블 발사 & 노드 켜짐)
+            textEl.style.opacity = 0;
+            setTimeout(() => {
+                textEl.innerHTML = "이 거대한 데이터는 <b>'광케이블망'</b>을 타고 전 세계로 퍼져<br><b style='color:var(--neon-yellow);'>스마트시티와 자율주행, AI를 움직이며 세상을 변화시킵니다.</b>";
+                textEl.style.opacity = 1;
+                
+                // 선 발사
+                document.querySelectorAll('.optic-line').forEach(line => line.classList.add('shoot'));
+                
+                // 노드 점등
+                setTimeout(() => {
+                    document.querySelectorAll('.world-node').forEach(node => node.classList.add('active'));
+                }, 500);
+
+                btn.innerText = "이제 내가 직접 전송해보기 🚀";
+                btn.style.background = "transparent";
+                btn.style.border = "2px solid var(--neon-yellow)";
+                btn.style.color = "var(--neon-yellow)";
+                btn.style.boxShadow = "none";
+                
+            }, 500);
+            evolutionStep++;
+        }
+        else if (evolutionStep === 2) {
+            // STEP 3: 네트워크 통신 게임 진입
+            document.getElementById('header').style.opacity = 1;
+            goStage(5);
+        }
     }
 
     // --- Stage 5: SNS 메시지 수신 게임 ---
@@ -417,7 +534,6 @@
     let playerState = 0; 
     let activeBits = [];
     
-    // 속도 초기값 (보통)
     let bitSpeed = 4.0; 
     let bitSpacing = 110; 
 
@@ -440,15 +556,12 @@
     }
 
     function startCountdown() {
-        // 유저가 선택한 문장 설정
         let selectEl = document.getElementById('msg-select');
         selectedSentence = SENTENCES[selectEl.value];
         
-        // 유저가 선택한 3단계 속도 설정
         let speedEl = document.getElementById('speed-select');
         bitSpeed = parseFloat(speedEl.value);
 
-        // 공백 및 기호를 제외한 순수 플레이 문자 수 계산
         totalPlayableChars = selectedSentence.replace(/[ !?.]/g, "").length;
 
         document.getElementById('ready-screen').style.display = 'none';
@@ -480,14 +593,13 @@
 
     function setupNextChar() {
         if (currentCharIdx >= selectedSentence.length) { 
-            setTimeout(gameOver, 1000); // 문장이 끝나면 1초 뒤 종료
+            setTimeout(gameOver, 1000); 
             return; 
         }
 
         let char = selectedSentence[currentCharIdx];
         renderSenderText();
 
-        // 공백이나 기호는 게임 없이 자동 통과
         if (char === " " || char === "!" || char === "?" || char === ".") {
             receivedString += char;
             document.getElementById('receiver-text').innerHTML = receivedString.replace(/ /g, "&nbsp;");
