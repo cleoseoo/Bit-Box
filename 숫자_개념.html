@@ -25,8 +25,6 @@
             --sky-blue-active: #e0f2fe; 
             --overlay: rgba(0, 0, 0, 0.4); 
             --success-green: #10b981;
-            
-            /* 사이드바 확실한 구별 (이 파일의 스타일에서는 직접 색상값을 쓰므로 사용 안 함) */
         }
 
         * { cursor: default !important; box-sizing: border-box; }
@@ -96,6 +94,7 @@
         .status-btn.btn-help { color: #ff2d55; border-color: rgba(255,45,85,0.2); }
         .status-btn.btn-done { color: var(--success-green); border-color: rgba(16, 185, 129, 0.2); }
 
+        /* ⭐ 모던한 네비게이션 메뉴 (패턴 통일 및 진한 블루 강조) */
         nav { margin-top: 15px; display: flex; justify-content: center; gap: 4px; padding-bottom: 0; position: relative; width: 100%; }
         .menu-item { position: relative; display: inline-block; }
         .menu-link {
@@ -106,16 +105,19 @@
         }
         
         .menu-link.active { 
-            background-color: #f0f9ff !important; color: #0284c7 !important; 
+            background-color: #e0f2fe !important; 
+            color: #005bb5 !important;           
             font-weight: 900 !important; border-color: rgba(0,0,0,0.05);
-            box-shadow: 0 -4px 12px rgba(14, 165, 233, 0.1) !important; 
+            box-shadow: 0 -4px 12px rgba(0, 113, 227, 0.15) !important; 
         }
-        .menu-item:hover > .menu-link:not(.active) { background-color: #f8fafc !important; color: var(--apple-blue) !important; }
+        .menu-item:hover > .menu-link:not(.active) { background-color: #f0f9ff !important; color: var(--apple-blue) !important; }
 
         .dropdown { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background: white; border-radius: 0 0 14px 14px; min-width: 150px; display: none; list-style: none; padding: 10px 0; margin: 0; box-shadow: 0 10px 30px rgba(0,0,0,0.1); z-index: 6000; border: 1px solid rgba(0,0,0,0.05); }
         .menu-item:hover .dropdown { display: block !important; }
-        .dropdown li a { display: block; padding: 10px 15px; color: #1d1d1f; text-decoration: none; font-size: 0.8rem; text-align: center; font-weight: 700; transition: 0.2s;}
-        .dropdown li a:hover { background: #f0f9ff; color: #0284c7; }
+        
+        /* ⭐ 수정된 부분: 하위 메뉴 기본 스타일 및 마우스를 올렸을 때만 색상이 변하도록 수정 */
+        .dropdown li a { display: block; padding: 10px 15px; color: #1d1d1f; text-decoration: none; font-size: 0.8rem; text-align: center; font-weight: 700; transition: 0.2s; }
+        .dropdown li a:hover { background: #e0f2fe; color: #005bb5; font-weight: 900; }
 
         main { flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1000; width: 100%; }
         .content-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 20px 100px 20px; }
@@ -141,12 +143,12 @@
         .lock-input {
             padding: 12px 20px; font-size: 1.5rem; font-weight: 900; border-radius: 12px;
             border: 2px solid rgba(0,0,0,0.1); outline: none; text-align: center; margin-top: 20px; width: 180px;
-            font-family: 'JetBrains Mono', monospace; background: #f9f9f9; color: #0071e3; transition: 0.3s;
+            font-family: 'JetBrains Mono', monospace; background: #f9f9f9; color: var(--apple-blue); transition: 0.3s;
         }
-        .lock-input:focus { border-color: #0071e3; box-shadow: 0 0 15px rgba(0,113,227,0.2); background: white; }
+        .lock-input:focus { border-color: var(--apple-blue); box-shadow: 0 0 15px rgba(0,113,227,0.2); background: white; transform: translateY(-2px); }
         .lock-btn {
             padding: 12px 25px; font-size: 1.1rem; font-weight: 900; border-radius: 12px;
-            border: none; background: #0071e3; color: white; margin-top: 20px;
+            border: none; background: var(--apple-blue); color: white; margin-top: 20px;
             cursor: pointer; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,113,227,0.3);
         }
         .lock-btn:hover { background: #005bb5; transform: translateY(-2px); }
@@ -245,7 +247,7 @@
         .concept-box { background: #fafafa; border: 1px solid rgba(16, 185, 129, 0.1); padding: 25px 30px; border-radius: 20px; margin: 10px 0 25px 0; text-align: left; line-height: 1.8; color: #424245; font-size: 0.95rem; width: 100%; box-sizing: border-box; font-weight: 600; }
         .concept-box-title { display: flex; align-items: center; gap: 8px; color: #047857; font-weight: 900; font-size: 1.15rem; margin-bottom: 15px; } .concept-box-title svg { fill: #047857; }
 
-        /* ⭐ 2단계 나눗셈 꿀팁 전용 보라색 박스 (이전 테마가 보라색이라 이름이 그렇지만 색상은 파란색 톤으로) */
+        /* ⭐ 2단계 나눗셈 꿀팁 전용 보라색 박스 */
         .tip-box-purple { background: #f0f9ff; border: 1.5px solid rgba(14, 165, 233, 0.3); padding: 30px 40px; border-radius: 22px; margin: 10px 0 20px 0; text-align: left; line-height: 1.8; font-size: 1rem; font-weight: 600; width: 100%; box-sizing: border-box; }
         .tip-box-title { display: flex; align-items: center; gap: 8px; color: #0284c7; font-weight: 900; font-size: 1.25rem; margin-bottom: 15px; }
 
@@ -253,7 +255,7 @@
         .tip-box-blue { background: #f0f7ff; border: 1.5px solid rgba(0, 113, 227, 0.3); padding: 30px 40px; border-radius: 22px; margin: 10px 0 20px 0; text-align: left; line-height: 1.8; color: #005bb5; font-size: 1rem; font-weight: 600; width: 100%; box-sizing: border-box; }
         .tip-box-blue .tip-box-title { display: flex; align-items: center; gap: 8px; color: #0071e3; font-weight: 900; font-size: 1.25rem; margin-bottom: 15px; }
 
-        /* 2단계 대화형 나눗셈 계산기 CSS (파란색 테마 적용) */
+        /* 2단계 대화형 나눗셈 계산기 CSS */
         .interactive-div-container { display: flex; flex-direction: column; align-items: flex-start; font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 700; color: #1d1d1f; margin-top: 10px; position: relative; z-index: 2; }
         .div-row { display: flex; align-items: center; height: 50px; position: relative; }
         .div-left { width: 40px; text-align: right; color: #0284c7; padding-right: 15px; border-right: 2.5px solid #1d1d1f; height: 100%; display: flex; align-items: center; justify-content: flex-end;}
@@ -318,19 +320,15 @@
         }
         .score-board.pulse { transform: scale(1.15); box-shadow: 0 10px 25px rgba(255,45,85,0.5); } 
 
-        .quiz-box { font-size: 1.05rem; line-height: 2.2; color: #1d1d1f; font-weight: 600; background: #fafafa; padding: 25px 30px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; text-align: left; transition: 0.3s; }
+        .quiz-box { font-size: 1.05rem; line-height: 2.3; color: #1d1d1f; font-weight: 600; background: #fafafa; padding: 25px 30px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; text-align: left; transition: 0.3s;}
         .quiz-box:hover { background: white; border-color: rgba(0,113,227,0.15); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
         
-        .blank { box-sizing: border-box; display: inline-block; width: 110px; height: 38px; background: white; border: 2px dashed rgba(0, 113, 227, 0.4); border-radius: 8px; vertical-align: middle; padding: 0 5px; text-align: center; line-height: 34px; font-size: 1.05rem; font-weight: 800; color: #0071e3; margin: 0 6px; transition: all 0.2s ease; cursor: text !important; outline: none; }
-        .blank:focus { border-color: #0071e3; box-shadow: 0 0 8px rgba(0, 113, 227, 0.2); width: 120px; }
-        .blank.correct { background: #e8f5e9; color: var(--success-green); border: 2px solid var(--success-green); box-shadow: none; }
+        .blank { box-sizing: border-box; display: inline-block; width: 105px; height: 38px; background: white; border: 2px dashed rgba(0, 113, 227, 0.4); border-radius: 10px; vertical-align: middle; padding: 0 5px; text-align: center; line-height: 34px; font-size: 1.05rem; font-weight: 800; color: #0071e3; margin: 0 6px; transition: all 0.2s ease; cursor: text !important; outline: none; }
+        .blank:focus { border-color: #0071e3; box-shadow: 0 0 8px rgba(0, 113, 227, 0.2); width: 115px;}
+        .blank.correct { background: #e0f2fe; color: var(--ocean-blue); border: 2px solid var(--ocean-blue); box-shadow: none; }
         .blank:disabled { opacity: 1; cursor: default !important; }
-        
-        .hint-btn { background: white; color: #0071e3; border: 1px solid #0071e3; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; cursor: pointer !important; margin-left: 10px; font-weight: 700; vertical-align: middle; transition: 0.2s; }
-        .hint-btn:hover { background: #0071e3; color: white; }
-        .hint-display { font-size: 0.85rem; color: #0071e3; font-weight: 700; margin-left: 10px; display: none; background: #e0f2fe; padding: 4px 12px; border-radius: 8px; border: 1px dashed #0071e3; vertical-align: middle; }
 
-        /* ⭐ 사이드바 및 모달 (하늘색 테마의 딥 글래스모피즘 적용 완벽 통일) */
+        /* ⭐ 사이드바 및 모달 */
         .sidebar-right { 
             width: 360px; display: flex; flex-direction: column; flex-shrink: 0; 
             padding: 30px 0 35px 20px; 
@@ -339,7 +337,6 @@
         }
         
         .memo-section, .reflection-section { 
-            /* 본문 배경보다 살짝 더 진한 푸른빛 유리 질감 */
             background: linear-gradient(135deg, rgba(224, 242, 254, 0.9) 0%, rgba(186, 230, 253, 0.8) 100%); 
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border-radius: 28px 0 0 28px; 
@@ -355,7 +352,7 @@
         
         .memo-area { 
             flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; 
-            background-image: linear-gradient(rgba(14, 165, 233, 0.25) 1px, transparent 1px); /* 스카이 블루 줄무늬 */
+            background-image: linear-gradient(rgba(14, 165, 233, 0.25) 1px, transparent 1px); 
             background-size: 100% 1.8rem; cursor: text !important; font-family: 'Pretendard', sans-serif;
             color: #1d1d1f;
         }
@@ -371,8 +368,8 @@
             padding: 8px; border-radius: 10px; border: 1px dashed var(--apple-blue); text-align: center; 
         }
 
-        footer { padding: 15px 40px; background: rgba(255,255,255,0.5); color: #86868b; border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; font-weight: 600; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); z-index: 9000; align-items: center; justify-content: center; }
+        footer { padding: 15px 40px; background: rgba(255,255,255,0.5); color: var(--apple-gray); border-top: 1px solid rgba(0,0,0,0.05); font-size: 0.8rem; font-weight: 600; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--overlay); backdrop-filter: blur(8px); z-index: 9000; align-items: center; justify-content: center; }
         .modal-content { background: white; padding: 40px; border-radius: 28px; width: 480px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); animation: popUp 0.3s ease-out;}
         @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
@@ -399,7 +396,7 @@
             <div class="menu-item">
                 <span class="menu-link active">숫자의 디지털 표현</span>
                 <ul class="dropdown">
-                    <li><a href="숫자_개념.html" style="background:#f0f9ff; color:#0284c7; font-weight:900;">📖 개념 탐구</a></li>
+                    <li><a href="숫자_개념.html">📖 개념 탐구</a></li>
                     <li><a href="숫자_활용실습.html">🛠️ 활용 실습</a></li>
                 </ul>
             </div>
@@ -414,13 +411,13 @@
     <main>
         <div class="content-container">
             <div class="content-card">
-                
+
                 <div class="lock-overlay" id="lockOverlay">
                     <div class="lock-box">
                         <div class="lock-icon">🔒</div>
                         <h2 style="margin: 0 0 10px 0; font-weight: 900; color: #1d1d1f;">암호를 풀어라!</h2>
                         <p style="font-size: 0.95rem; color: #86868b; margin-bottom: 20px; line-height: 1.6; font-weight: 600;">
-                            '숫자' 데이터 비트박스를 열려면<br>
+                              '숫자' 데이터 비트박스를 열려면<br>
                             <b style="color:var(--ocean-blue)">오늘 날짜(일)를 이진수로 변환</b>하여 입력하세요!
                         </p>
                         <input type="text" id="lockInput" class="lock-input" placeholder="예: 101" onkeypress="if(event.key==='Enter') checkPassword()" autocomplete="off">
@@ -428,7 +425,7 @@
                         <button class="lock-btn" onclick="checkPassword()">보안 시스템 해제</button>
                     </div>
                 </div>
-
+                
                 <div id="step1-visual" class="step-container">
                     <div style="font-size: 1.3rem; font-weight: 900; color: #0071e3; margin-bottom: 15px; text-align: center;">전구를 켜서 숫자를 만들어보자!</div>
                     
@@ -531,7 +528,7 @@
                         <p style="margin-bottom: 25px;">
                             자릿값이 바로 떠오르지 않을 땐, 십진수를 <b>2로 계속 나누어 보세요.</b><br>
                             아래의 빈칸에 <b>몫</b>과 <b>나머지</b>를 정확히 채워보세요. <br>
-		           몫이 0이 될 때까지 나눈 뒤 <b>나머지를 아래에서 위로</b> 읽으면 완벽한 이진수가 됩니다.
+                몫이 0이 될 때까지 나눈 뒤 <b>나머지를 아래에서 위로</b> 읽으면 완벽한 이진수가 됩니다.
                         </p>
                         
                         <div style="text-align: center; background: white; padding: 40px; border-radius: 18px; border: 1px solid rgba(14, 165, 233, 0.15); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
@@ -866,7 +863,6 @@
             const resultStr = `${r4}${r3}${r2}${r1}`;
             document.getElementById('final-bin').innerText = `${r4} ${r3} ${r2} ${r1}`;
             
-            // 정답 '1101'을 입력했을 때 시각적 피드백 제공 (파란색 테마로 수정)
             const box = document.getElementById('resultBox');
             const resultText = document.getElementById('final-bin');
             
@@ -915,13 +911,12 @@
                 el.disabled = true;
                 scored.add(el); 
                 
-                score += 14.2857; // 100점 / 7문제
+                score += 14.2857; 
                 let displayScore = Math.round(score);
                 if(displayScore >= 99) displayScore = 100;
                 
                 document.getElementById('currentScore').innerText = displayScore;
 
-                // 점수판 펄스 애니메이션 트리거
                 const sb1 = document.getElementById('scoreBoard1');
                 sb1.classList.add('pulse'); 
                 setTimeout(() => { sb1.classList.remove('pulse'); }, 300);
@@ -960,9 +955,9 @@
         }
 
         function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-window.onload = function() {
+        
+        window.onload = function() {
             const wordBank = document.querySelector('.word-bank');
-            // 자식 요소(word-item)들을 무작위 순서로 다시 배치합니다.
             for (let i = wordBank.children.length; i >= 0; i--) {
                 wordBank.appendChild(wordBank.children[Math.random() * i | 0]);
             }
