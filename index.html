@@ -12,7 +12,6 @@
             --text-sub: #86868b;
             --card-bg: rgba(255, 255, 255, 0.85);
             
-            /* 테마 컬러 정의 */
             --theme-mint: #10b981;
             --theme-mint-light: #d1fae5;
             --theme-blue: #0071e3;
@@ -37,32 +36,29 @@
             color: var(--text-main);
         }
 
-        /* ⭐ 상단 헤더 (유리 질감) */
+        /* ⭐ 상단 헤더 */
         header {
             position: sticky; top: 0; z-index: 5000;
             background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(0,0,0,0.05);
-            padding: 15px 40px;
-            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 40px; display: flex; justify-content: space-between; align-items: center;
         }
 
         .header-left { display: flex; align-items: center; gap: 15px; }
         .target-badge {
-            background: #1d1d1f; color: white;
-            padding: 4px 10px; border-radius: 8px;
+            background: #1d1d1f; color: white; padding: 4px 10px; border-radius: 8px;
             font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px;
         }
         .main-title { font-size: 1.4rem; font-weight: 900; margin: 0; letter-spacing: -0.02em; }
 
         .status-controller { display: flex; gap: 8px; }
         .status-btn {
-            padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem;
+            padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.85rem;
             border: 1px solid rgba(0,0,0,0.1); background: white; color: var(--text-main);
-            cursor: pointer; transition: 0.2s;
+            cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        .status-btn:hover { background: #f0f0f0; }
+        .status-btn:hover { background: #fff0f0; border-color: rgba(255, 69, 58, 0.3); color: #ff3b30; transform: translateY(-2px); }
 
         /* ⭐ 메인 콘텐츠 영역 */
         main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 60px 20px; }
@@ -73,35 +69,19 @@
         .highlight { color: var(--theme-blue); }
 
         /* ⭐ 3개의 기둥 (단원 흐름도) */
-        .pillar-container {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;
-            width: 100%; max-width: 1150px;
-        }
+        .pillar-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; max-width: 1150px; }
 
         .pillar {
-            background: var(--card-bg);
-            border: 1px solid white;
-            border-radius: 28px; padding: 35px 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.03);
-            display: flex; flex-direction: column;
-            backdrop-filter: blur(10px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
-            position: relative;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid white; border-radius: 28px; padding: 35px 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.03); display: flex; flex-direction: column;
+            backdrop-filter: blur(10px); transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; position: relative; overflow: hidden;
         }
-        
-        /* 기둥 상단 은은한 컬러 라인 */
-        .pillar::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
-            transition: 0.4s; opacity: 0.8;
-        }
-
+        .pillar::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; transition: 0.4s; opacity: 0.8; }
         .pillar:nth-child(1) { animation-delay: 0.1s; }
         .pillar:nth-child(2) { animation-delay: 0.2s; }
         .pillar:nth-child(3) { animation-delay: 0.3s; }
 
-        /* 테마별 컬러 적용 */
         .pillar.theme-mint::before { background: var(--theme-mint); }
         .pillar.theme-mint:hover { transform: translateY(-10px); box-shadow: 0 25px 45px rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.2); }
         .pillar.theme-mint .pillar-header { color: var(--theme-mint); }
@@ -128,42 +108,61 @@
         }
         .step-num { font-size: 0.75rem; font-weight: 900; padding: 4px 8px; border-radius: 6px; margin-right: 10px; }
         
-        /* 리스트 아이템 호버 효과 */
         .pillar.theme-mint .step-item:hover { border-color: var(--theme-mint); color: var(--theme-mint); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.1); }
         .pillar.theme-mint .step-num { background: var(--theme-mint-light); color: #047857; }
-        
         .pillar.theme-blue .step-item:hover { border-color: var(--theme-blue); color: var(--theme-blue); box-shadow: 0 5px 15px rgba(0, 113, 227, 0.1); }
         .pillar.theme-blue .step-num { background: var(--theme-blue-light); color: #005bb5; }
-        
         .pillar.theme-violet .step-item:hover { border-color: var(--theme-violet); color: var(--theme-violet); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.1); }
         .pillar.theme-violet .step-num { background: var(--theme-multi-light); color: #4527a0; }
-        
-        /* 네이비 색상 포인트 (동영상) */
         .pillar.theme-violet .step-item.navy-step:hover { border-color: var(--theme-navy); color: var(--theme-navy); box-shadow: 0 5px 15px rgba(30, 55, 153, 0.1); }
         .pillar.theme-violet .step-item.navy-step .step-num { background: #e8eaf6; color: var(--theme-navy); }
 
-        /* ⭐ 저작권 플로팅 아이콘 (우측 하단) */
+        /* ⭐ 저작권 플로팅 아이콘 */
         .copyright-btn {
-            position: fixed; bottom: 30px; right: 30px;
-            width: 48px; height: 48px; border-radius: 50%;
-            background: white; border: 1px solid #e5e5e7;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            cursor: pointer; font-size: 1.2rem; font-weight: 900; color: var(--text-sub);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 9000; text-decoration: none;
+            position: fixed; bottom: 30px; right: 30px; width: 48px; height: 48px; border-radius: 50%;
+            background: white; border: 1px solid #e5e5e7; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); cursor: pointer; font-size: 1.2rem; font-weight: 900; color: var(--text-sub);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); z-index: 4000; text-decoration: none;
         }
-        .copyright-btn:hover { color: var(--apple-blue); border-color: var(--apple-blue); transform: scale(1.1) rotate(10deg); box-shadow: 0 12px 25px rgba(0,113,227,0.15); }
+        .copyright-btn:hover { color: var(--theme-blue); border-color: var(--theme-blue); transform: scale(1.1) rotate(10deg); box-shadow: 0 12px 25px rgba(0,113,227,0.15); }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ⭐ 커스텀 팝업 (모달) 전용 스타일 ⭐ */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+            opacity: 0; transition: opacity 0.3s ease;
         }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        
+        .modal-box {
+            background: white; border-radius: 24px; padding: 40px; width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15); text-align: center;
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .modal-overlay.show .modal-box { transform: scale(1); }
+        
+        .modal-icon { font-size: 3rem; margin-bottom: 15px; }
+        .modal-title { font-size: 1.5rem; font-weight: 900; color: var(--text-main); margin: 0 0 15px 0; letter-spacing: -0.03em;}
+        .modal-desc { font-size: 1rem; font-weight: 600; color: var(--text-sub); line-height: 1.6; margin-bottom: 30px; word-break: keep-all;}
+        
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .modal-btn {
+            flex: 1; padding: 14px; border-radius: 14px; font-size: 1.05rem; font-weight: 800;
+            border: none; cursor: pointer; transition: 0.2s;
+        }
+        .modal-btn.cancel { background: #f5f5f7; color: var(--text-main); }
+        .modal-btn.cancel:hover { background: #e5e5e7; }
+        .modal-btn.danger { background: #ff3b30; color: white; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
+        .modal-btn.danger:hover { background: #d70015; transform: translateY(-2px); }
+        .modal-btn.primary { background: var(--theme-blue); color: white; box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3); }
+        .modal-btn.primary:hover { background: var(--theme-blue-hover); transform: translateY(-2px); }
 
         /* 반응형 */
-        @media (max-width: 1024px) {
-            .pillar-container { grid-template-columns: repeat(2, 1fr); }
-        }
+        @media (max-width: 1024px) { .pillar-container { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 768px) {
             .pillar-container { grid-template-columns: 1fr; }
             .hero-title { font-size: 2.2rem; }
@@ -179,8 +178,7 @@
             <h1 class="main-title">데이터 비트박스</h1>
         </div>
         <div class="status-controller">
-            <button class="status-btn" onclick="alert('데이터 초기화 기능 준비중입니다.')">초기화</button>
-            <button class="status-btn">선생님 메뉴</button>
+            <button class="status-btn" onclick="openResetModal()">🔄 전체 데이터 초기화</button>
         </div>
     </header>
 
@@ -248,9 +246,76 @@
         </div>
     </main>
 
-    <a href="#" class="copyright-btn" title="저작권 안내 및 출처 확인" onclick="alert('저작권 및 출처 안내 페이지를 연결할 예정입니다.'); return false;">
-        ⓒ
-    </a>
+    <a href="#" class="copyright-btn" title="저작권 안내" onclick="openInfoModal(); return false;">ⓒ</a>
 
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-icon" id="modalIcon">⚠️</div>
+            <h3 class="modal-title" id="modalTitle">경고</h3>
+            <p class="modal-desc" id="modalDesc">메시지 내용</p>
+            <div class="modal-btn-group" id="modalButtons">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 커스텀 팝업 시스템 ---
+        const modal = document.getElementById('customModal');
+        const mIcon = document.getElementById('modalIcon');
+        const mTitle = document.getElementById('modalTitle');
+        const mDesc = document.getElementById('modalDesc');
+        const mBtns = document.getElementById('modalButtons');
+
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => { modal.style.display = 'none'; }, 300); // 페이드아웃 후 숨김
+        }
+
+        // 1. 전체 초기화 '확인' 팝업 띄우기
+        function openResetModal() {
+            mIcon.innerText = "⚠️";
+            mTitle.innerText = "전체 데이터 초기화";
+            mTitle.style.color = "#ff3b30";
+            mDesc.innerHTML = "이 PC에 저장된 모든 학생의 <b>'퀴즈 점수', '학습 메모', '소감문'</b> 등 모든 기록이 영구적으로 삭제됩니다.<br><br>정말 모든 데이터를 초기화하시겠습니까?";
+            
+            mBtns.innerHTML = `
+                <button class="modal-btn cancel" onclick="closeModal()">취소</button>
+                <button class="modal-btn danger" onclick="executeReset()">초기화 진행</button>
+            `;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10);
+        }
+
+        // 실제 데이터 삭제 실행 및 성공 팝업
+        function executeReset() {
+            localStorage.clear(); // 데이터 삭제
+            
+            // 삭제 완료 팝업으로 내용 변경
+            mIcon.innerText = "✅";
+            mTitle.innerText = "초기화 완료";
+            mTitle.style.color = "var(--theme-mint)";
+            mDesc.innerHTML = "모든 학습 데이터가 깨끗하게 초기화되었습니다.";
+            
+            mBtns.innerHTML = `
+                <button class="modal-btn primary" onclick="location.reload()">확인</button>
+            `;
+        }
+
+        // 2. 저작권/안내 '알림' 팝업 띄우기
+        function openInfoModal() {
+            mIcon.innerText = "ℹ️";
+            mTitle.innerText = "안내";
+            mTitle.style.color = "var(--theme-blue)";
+            mDesc.innerHTML = "저작권 및 출처 안내 페이지를 연결할 예정입니다.";
+            
+            mBtns.innerHTML = `
+                <button class="modal-btn primary" onclick="closeModal()">확인</button>
+            `;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('show'); }, 10);
+        }
+    </script>
 </body>
 </html>
