@@ -159,7 +159,7 @@
         .modal-btn.danger { background: #ff3b30; color: white; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
         .modal-btn.danger:hover { background: #d70015; transform: translateY(-2px); }
         .modal-btn.primary { background: var(--theme-blue); color: white; box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3); }
-        .modal-btn.primary:hover { background: var(--theme-blue-hover); transform: translateY(-2px); }
+        .modal-btn.primary:hover { background: #005bb5; color: white; transform: translateY(-2px); }
 
         /* 반응형 */
         @media (max-width: 1024px) { .pillar-container { grid-template-columns: repeat(2, 1fr); } }
@@ -276,8 +276,8 @@
             mIcon.innerText = "⚠️";
             mTitle.innerText = "전체 데이터 초기화";
             mTitle.style.color = "#ff3b30";
-            mDesc.innerHTML = "이 PC에 저장된 모든 학생의 <b>'퀴즈 점수', '학습 메모', '소감문'</b> 등 모든 기록이 영구적으로 삭제됩니다.<br><br>정말 모든 데이터를 초기화하시겠습니까?";
-            
+            mDesc.innerHTML = "이 기기에 저장된 <b>'퀴즈 점수', '학습 메모', '소감문' </b>등</b><br>모든 기록이 영구적으로 삭제됩니다.<br><br>데이터를 초기화 하시겠습니까?";
+           
             mBtns.innerHTML = `
                 <button class="modal-btn cancel" onclick="closeModal()">취소</button>
                 <button class="modal-btn danger" onclick="executeReset()">초기화 진행</button>
@@ -295,7 +295,7 @@
             mIcon.innerText = "✅";
             mTitle.innerText = "초기화 완료";
             mTitle.style.color = "var(--theme-mint)";
-            mDesc.innerHTML = "모든 학습 데이터가 깨끗하게 초기화되었습니다.";
+            mDesc.innerHTML = "모든 학습 데이터가 초기화되었습니다.";
             
             mBtns.innerHTML = `
                 <button class="modal-btn primary" onclick="location.reload()">확인</button>
