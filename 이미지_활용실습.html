@@ -63,7 +63,7 @@
 
         main { flex: 1; display: flex; padding: 25px; gap: 25px; }
 
-      /* 오른쪽 컨트롤 패널에만 불투명 유리 효과 유지 */
+        /* 오른쪽 컨트롤 패널에만 불투명 유리 효과 유지 */
         .control-panel {
             background: var(--panel-bg); backdrop-filter: blur(12px);
             border-radius: 20px; border: 1px solid var(--glass-border);
@@ -117,8 +117,8 @@
             background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);
             display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center;
         }
-        .overlay h1 { color: #2d3436; font-size: 2.5rem; font-weight: 900; }
-        .overlay p { color: #636e72; font-size: 1.1rem; font-weight: 600; }
+        .overlay h1 { color: #2d3436; font-size: 2.5rem; font-weight: 900; margin-bottom: 15px; }
+        .overlay p { color: #636e72; font-size: 1.05rem; font-weight: 600; line-height: 1.6; }
 
         .status-board { display: flex; gap: 15px; margin-bottom: 15px; }
         .status-box {
@@ -168,7 +168,7 @@
         .sub-btn-group { display: flex; gap: 10px; }
         .btn-sub {
             flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: 700;
-            background: rgba(0,0,0,0.05); color: #636e72; font-size: 0.9rem; cursor: pointer !important; transition: 0.2s;
+            background: rgba(0,0,0,0.05); color: #636e72; font-size: 0.95rem; cursor: pointer !important; transition: 0.2s;
         }
         .btn-sub:hover { background: rgba(0,0,0,0.1); }
         .btn-reset:hover { color: var(--accent-red); background: #ffeaa7; }
@@ -177,11 +177,11 @@
         #toast {
             position: absolute; top: 30px; left: 50%; transform: translateX(-50%);
             background: #009432; color: #fff; padding: 12px 30px; border-radius: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            font-weight: 800; font-size: 1.1rem; opacity: 0; transition: 0.3s; z-index: 2000;
+            font-weight: 800; font-size: 1.1rem; opacity: 0; transition: 0.3s; z-index: 2000; text-align: center;
         }
     </style>
 </head>
-<body id="mainBody">
+<body>
 
     <div class="zoo-bg">
         <div class="clouds">☁️ ☁️ ☁️</div>
@@ -213,10 +213,14 @@
             <div id="toast">구출 성공! 🎉</div>
             
             <div id="screen-standby" class="overlay">
-                <div style="font-size: 5rem; margin-bottom: 10px;">📡</div>
-                <h1>시그널 수신됨</h1>
-                <p>총 15마리의 동물이 철장에 갇혀있습니다.<br>데이터를 복구하여 동물을 구출하십시오.</p>
-                <button class="btn-submit" style="width: 250px; margin-top: 20px;" onclick="startGame()">▶ 구출 작전 시작</button>
+                <div style="font-size: 5rem; margin-bottom: 10px;">🚁📡</div>
+                <h1 style="color: #2d3436; font-size: 2.2rem;">아프리카 초원 탐사 드론</h1>
+                <div style="background: rgba(255,255,255,0.6); padding: 25px 30px; border-radius: 16px; max-width: 550px; text-align: left; border: 1px solid rgba(0,0,0,0.1); margin-bottom: 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                    <p style="margin-top: 0; font-size: 1.15rem; font-weight: 800; color: #d63031;">"현재 탐사 드론의 통신 상태가 좋지 않습니다." 📉</p>
+                    <p>대역폭의 제한으로 인해 고화질 원본 사진 대신 <b>'저해상도 비트맵 이미지'</b>로만 수신되고 있습니다.</p>
+                    <p style="margin-bottom: 0;">제한된 데이터(해상도 및 RGB 채널)를 분석하여, 밀렵꾼의 철장에 갇힌 <b>멸종 위기 동물을 식별하고 구출</b>하세요!</p>
+                </div>
+                <button class="btn-submit" style="width: 250px;" onclick="startGame()">▶ 구출 작전 시작</button>
             </div>
 
             <div id="screen-over" class="overlay hidden">
@@ -270,6 +274,7 @@
             <div class="action-area hidden" id="ui-action">
                 <input type="text" id="input-answer" class="input-box" placeholder="구출할 동물 이름 입력" onkeypress="if(event.key==='Enter') checkAnswer()" autocomplete="off">
                 <button class="btn-submit" onclick="checkAnswer()">✅ 정답 제출</button>
+                
                 <div class="sub-btn-group">
                     <button class="btn-sub" onclick="skipMission()">⏭️ 스킵</button>
                     <button class="btn-sub btn-reset" onclick="location.reload()">🔄 처음부터</button>
@@ -317,7 +322,7 @@
         }
 
         function updateSlider(key, el) {
-            if (!isPlaying) return;
+            if (!isPlaying) return; 
             const val = parseInt(el.value);
             if (val < limits[key]) el.value = limits[key]; 
             else limits[key] = val;
