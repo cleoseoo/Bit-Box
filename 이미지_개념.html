@@ -244,7 +244,7 @@
         .code-input-area { width: 100%; height: 200px; font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; font-weight: 800; padding: 15px; border-radius: 12px; border: 2px solid #ced4da; outline: none; resize: none; line-height: 1.5; letter-spacing: 2px; }
         .code-input-area:focus { border-color: var(--multi-violet); box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2); }
         
-        .decoder-canvas-wrapper { width: 256px; height: 256px; border: 4px solid #ced4da; border-radius: 8px; background: #e9ecef; position: relative; overflow: hidden; }
+        .decoder-canvas-wrapper { width: 258px; height: 258px; border: 4px solid #ced4da; border-radius: 8px; background: #e9ecef; position: relative; overflow: hidden; }
         #decoderCanvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; }
         .grid-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background-image: linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px); }
 
@@ -608,21 +608,22 @@
                         비트 심도(Bit Depth)를 선택하고, 나만의 팔레트 규칙을 만들어 암호 코드를 그림으로 해독해 보세요!
                     </p>
 
-                    <div class="panel" style="background:#fafafa;">
+                  <div class="panel" style="background:#fafafa;">
                         <div class="panel-top-controls left" style="height: auto;">
                             <div class="mode-selector" style="margin-bottom: 0;">
                                 <button class="mode-btn active" id="btn1bit" onclick="setBitDepth(1)">⚫⚪ 1-Bit 모드 (2가지 색상)</button>
                                 <button class="mode-btn" id="btn2bit" onclick="setBitDepth(2)">🎨 2-Bit 모드 (4가지 색상)</button>
+                                <button class="mode-btn" id="btn8bit" onclick="showBitInfo()">💡 비트 심도와 RGB의 비밀</button>
                             </div>
                         </div>
 
-                        <div class="decoder-area">
+                       <div class="decoder-area" id="decoderMainArea">
                             <div class="decoder-setup">
                                 <div class="palette-config" id="paletteArea">
                                     <div style="font-size: 0.95rem; font-weight: 800; color: var(--multi-violet); margin-bottom: 5px;">🎨 팔레트 (규칙 설정)</div>
-                                    </div>
+                                </div>
                                 <div style="flex:1;">
-                                    <div style="font-size: 0.95rem; font-weight: 800; color: #343a40; margin-bottom: 8px;">⌨️ 이진수 코드 입력 (8x8 픽셀 기준)</div>
+                                    <div style="font-size: 0.95rem; font-weight: 800; color: #343a40; margin-bottom: 8px;">⌨️ 이진수 코드 입력 (10x10 픽셀 기준)</div>
                                     <textarea id="codeInput" class="code-input-area" oninput="renderDecoder()" spellcheck="false"></textarea>
                                 </div>
                             </div>
@@ -630,9 +631,47 @@
                             <div class="decoder-result">
                                 <div style="font-size: 1.1rem; font-weight: 900; color: var(--multi-violet); margin-bottom: 15px;">🖼️ 해독된 이미지</div>
                                 <div class="decoder-canvas-wrapper">
-                                    <canvas id="decoderCanvas" width="8" height="8"></canvas>
-                                    <div class="grid-overlay" style="background-size: 32px 32px;"></div> </div>
+                                    <canvas id="decoderCanvas" width="10" height="10"></canvas>
+                                    <div class="grid-overlay" style="background-size: 25px 25px;"></div> 
+                                </div>
                             </div>
+                        </div>
+
+                        <div id="bitInfoArea" style="display: none; width: 100%; background: white; border: 2px solid var(--multi-violet-light); border-radius: 16px; padding: 30px; margin-top: 15px; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <h3 style="color: var(--multi-violet); margin-top: 0; font-size: 1.4rem;">🌈 비트가 커지면 어떻게 될까요?</h3>
+                            <p style="font-size: 1.05rem; line-height: 1.7; color: #2d3436;">
+                                <b>비트 심도(Bit Depth)</b>는 하나의 픽셀이 색상을 표현하기 위해 사용하는 데이터의 크기(비트 수)를 말합니다.<br>
+                                비트가 하나 늘어날 때마다 표현할 수 있는 색상의 수는 <b>2배씩</b> 늘어납니다!
+                            </p>
+                            <div style="display: flex; gap: 15px; margin: 20px 0; text-align: center;">
+                                <div style="flex: 1; background: #f8f6ff; padding: 15px; border-radius: 12px; border: 1px dashed var(--multi-violet-light);">
+                                    <b>1-Bit</b><br>
+                                    <button class="inline-reveal-btn violet" style="margin: 8px 0; font-size: 1.1rem; padding: 4px 15px;" onclick="revealInline(this, '<span style=\'font-size:1.4rem;\'>2색</span>', 'var(--multi-violet)')">❓</button>
+                                    <br><span style="font-size:0.85rem; color:#636e72;">(2¹)</span>
+                                </div>
+                                <div style="flex: 1; background: #f8f6ff; padding: 15px; border-radius: 12px; border: 1px dashed var(--multi-violet-light);">
+                                    <b>2-Bit</b><br>
+                                    <button class="inline-reveal-btn violet" style="margin: 8px 0; font-size: 1.1rem; padding: 4px 15px;" onclick="revealInline(this, '<span style=\'font-size:1.4rem;\'>4색</span>', 'var(--multi-violet)')">❓</button>
+                                    <br><span style="font-size:0.85rem; color:#636e72;">(2²)</span>
+                                </div>
+                                <div style="flex: 1; background: #f8f6ff; padding: 15px; border-radius: 12px; border: 1px dashed var(--multi-violet-light);">
+                                    <b>3-Bit</b><br>
+                                    <button class="inline-reveal-btn violet" style="margin: 8px 0; font-size: 1.1rem; padding: 4px 15px;" onclick="revealInline(this, '<span style=\'font-size:1.4rem;\'>8색</span>', 'var(--multi-violet)')">❓</button>
+                                    <br><span style="font-size:0.85rem; color:#636e72;">(2³)</span>
+                                </div>
+                                <div style="flex: 1; background: #fff0f5; padding: 15px; border-radius: 12px; border: 2px solid var((--multi-violet-light);">
+                                    <b>8-Bit</b><br>
+                                    <button class="inline-reveal-btn" style="background: var(--multi-violet); color: white; border: none; box-shadow: 0 4px 10px rgba(255, 45, 85, 0.3); margin: 8px 0; font-size: 1.1rem; padding: 4px 15px;" onclick="revealInline(this, '<span style=\'font-size:1.4rem;\'>256색</span>', 'var(--apple-red)')">❓</button>
+                                    <br><span style="font-size:0.85rem; color:#636e72;">(2⁸)</span>
+                                </div>
+                            </div>
+                            <h3 style="color: var(--accent-blue); margin-bottom: 5px; margin-top: 30px; font-size: 1.2rem;">🎨 그렇다면 우리가 보는 진짜 사진은? (24-Bit RGB 컬러)</h3>
+                            <p style="font-size: 1.05rem; line-height: 1.7; color: #2d3436; margin-top: 5px;">
+                                우리가 스마트폰이나 모니터에서 보는 고화질 이미지는 빛의 삼원색인 <b>R(빨강), G(초록), B(파랑)</b>를 섞어서 만듭니다. 이때 R, G, B 각각에 <b>8-Bit (256단계)</b>씩 데이터를 할당합니다.<br><br>
+                                💡 <b>계산해볼까요?</b><br>
+                                <span style="font-family:'Orbitron'; color:var(--apple-red); font-weight:900;">R(256)</span> × <span style="font-family:'Orbitron'; color:var(--success-green); font-weight:900;">G(256)</span> × <span style="font-family:'Orbitron'; color: #0984e3; font-weight:900;">B(256)</span> = <b style="font-size:1.3rem; color:var(--multi-violet);">약 1,677만 가지 색상!</b><br>
+                                이것을 <b>'24-Bit 트루 컬러(True Color)'</b>라고 부르며, 자연에 있는 거의 모든 색을 표현할 수 있답니다.
+                            </p>
                         </div>
                     </div>
 
@@ -1199,11 +1238,15 @@
         let currentBitDepth = 1;
         let decoderPalette = {};
 
-        function setBitDepth(bits) {
+     function setBitDepth(bits) {
             currentBitDepth = bits;
             document.getElementById('btn1bit').classList.remove('active');
             document.getElementById('btn2bit').classList.remove('active');
+            document.getElementById('btn8bit').classList.remove('active');
             document.getElementById(`btn${bits}bit`).classList.add('active');
+
+            document.getElementById('bitInfoArea').style.display = 'none';
+            document.getElementById('decoderMainArea').style.display = 'flex';
 
             const paletteArea = document.getElementById('paletteArea');
             paletteArea.innerHTML = '<div style="font-size: 0.95rem; font-weight: 800; color: var(--multi-violet); margin-bottom: 5px;">🎨 팔레트 (규칙 설정)</div>';
@@ -1212,29 +1255,42 @@
             let inputExample = "";
 
             if (bits === 1) {
+                // ✨ 1-Bit 모드: 빨간 하트 (10x10)
                 decoderPalette['0'] = '#ffffff';
-                decoderPalette['1'] = '#ff2d55';
+                decoderPalette['1'] = '#ff2d55'; // 빨간색
                 paletteArea.innerHTML += `
                     <div class="palette-row">0: <input type="color" id="pal0" value="${decoderPalette['0']}" onchange="updateDecoderPalette()"></div>
                     <div class="palette-row">1: <input type="color" id="pal1" value="${decoderPalette['1']}" onchange="updateDecoderPalette()"></div>
                 `;
-                inputExample = "00000000\n01100110\n11111111\n11111111\n01111110\n00111100\n00011000\n00000000";
+                inputExample = "0011001100\n0111111110\n1111111111\n1111111111\n0111111110\n0011111100\n0001111000\n0000110000\n0000000000\n0000000000";
             } else {
+                // ✨ 2-Bit 모드: 귀여운 동물 얼굴 (10x10)
                 decoderPalette['00'] = '#ffffff';
-                decoderPalette['01'] = '#34c759';
-                decoderPalette['10'] = '#0071e3';
-                decoderPalette['11'] = '#ffcc00';
+                decoderPalette['01'] = '#fdcb6e'; // 동물 피부 (오렌지/베이지)
+                decoderPalette['10'] = '#2d3436'; // 눈/코 (검정)
+                decoderPalette['11'] = '#ff7675'; // 볼터치 (핑크)
                 paletteArea.innerHTML += `
                     <div class="palette-row">00: <input type="color" id="pal00" value="${decoderPalette['00']}" onchange="updateDecoderPalette()"></div>
                     <div class="palette-row">01: <input type="color" id="pal01" value="${decoderPalette['01']}" onchange="updateDecoderPalette()"></div>
                     <div class="palette-row">10: <input type="color" id="pal10" value="${decoderPalette['10']}" onchange="updateDecoderPalette()"></div>
                     <div class="palette-row">11: <input type="color" id="pal11" value="${decoderPalette['11']}" onchange="updateDecoderPalette()"></div>
                 `;
-                inputExample = "0000000000000000\n0010100000101000\n1010101010101010\n0000011111010000\n0000111111110000\n0000011111010000\n0000001111000000\n0000000000000000";
+                inputExample = "00000000000000000000\n00010100000000010100\n01010101010101010101\n01010101010101010101\n01011001010101100101\n01010101101001010101\n01010101010101010101\n00011101010101110100\n00000101010101010000\n00000000000000000000";
             }
 
             document.getElementById('codeInput').value = inputExample;
             renderDecoder();
+        }
+
+        // ✨ 새로 추가된 8비트 설명 탭 함수
+        function showBitInfo() {
+            document.getElementById('btn1bit').classList.remove('active');
+            document.getElementById('btn2bit').classList.remove('active');
+            document.getElementById('btn8bit').classList.add('active');
+
+            // 기존 해독기 숨기고, 설명 영역 보이기
+            document.getElementById('decoderMainArea').style.display = 'none';
+            document.getElementById('bitInfoArea').style.display = 'block';
         }
 
         function updateDecoderPalette() {
@@ -1250,27 +1306,34 @@
             renderDecoder();
         }
 
-        function renderDecoder() {
+     function renderDecoder() {
             const canvas = document.getElementById('decoderCanvas');
             const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, 8, 8);
+            // 캔버스 전체 지우기 (크기 10x10)
+            ctx.clearRect(0, 0, 10, 10);
 
             const codeText = document.getElementById('codeInput').value.replace(/\s+/g, ''); 
             let pixelIndex = 0;
 
             for (let i = 0; i < codeText.length; i += currentBitDepth) {
-                if (pixelIndex >= 64) break; 
+                // 최대 픽셀 수 100개(10x10)
+                if (pixelIndex >= 100) break; 
 
                 const chunk = codeText.substring(i, i + currentBitDepth);
                 const color = decoderPalette[chunk];
 
+                // ✨ 색상이 있든 없든 일단 x, y 좌표는 무조건 계산합니다.
+                const x = pixelIndex % 10;
+                const y = Math.floor(pixelIndex / 10);
+
                 if (color) {
-                    const x = pixelIndex % 8;
-                    const y = Math.floor(pixelIndex / 8);
                     ctx.fillStyle = color;
                     ctx.fillRect(x, y, 1, 1);
-                    pixelIndex++;
                 }
+                
+                // ✨ 핵심 수정 포인트: if문 바깥으로 뺐습니다!
+                // 잘못된 코드를 입력하더라도 자리가 밀리지 않고 그 칸만 비워두게 됩니다.
+                pixelIndex++; 
             }
         }
 
