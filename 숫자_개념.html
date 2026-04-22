@@ -843,6 +843,14 @@
             document.body.className = ''; 
             if(status === 'help') document.body.classList.add('status-help');
             if(status === 'done') document.body.classList.add('status-done');
+            // ✨ [메인 연동] 상태를 localStorage에 저장 → 새로고침 후에도 유지
+            try {
+                if(status === 'normal') {
+                    localStorage.removeItem('status_step' + (typeof THIS_STEP !== 'undefined' ? THIS_STEP : ''));
+                } else {
+                    localStorage.setItem('status_step' + (typeof THIS_STEP !== 'undefined' ? THIS_STEP : ''), status);
+                }
+            } catch(e) {}
         }
 
         const today = new Date().getDate(); 
@@ -1031,6 +1039,25 @@
         let correctAnswers = 0; 
         const scored = new Set();
 
+        // ✨ [메인 연동] 현재 스텝 번호 및 합격 기준 점수 설정
+        const THIS_STEP = 3; // 숫자 개념은 3단계
+        const PASS_SCORE = 70; // 70점 이상이면 완료 처리
+
+        // ✨ [메인 연동] 로컬 스토리지에 완료 상태 저장 함수
+        function markStepDone(finalScore) {
+            if (finalScore < PASS_SCORE) return;
+            try {
+                const done = JSON.parse(localStorage.getItem('completedSteps') || '[]');
+                if (!done.includes(THIS_STEP)) {
+                    done.push(THIS_STEP);
+                    localStorage.setItem('completedSteps', JSON.stringify(done));
+                }
+                // 점수 및 날짜도 함께 저장
+                localStorage.setItem('score_step' + THIS_STEP, finalScore);
+                localStorage.setItem('score_step' + THIS_STEP + '_date', new Date().toLocaleDateString('ko-KR'));
+            } catch(e) { console.warn('저장 실패:', e); }
+        }
+
         function startQuizTimer() {
             isQuizStarted = true;
             document.getElementById('startQuizBtn').style.display = 'none';
@@ -1129,7 +1156,10 @@
         function showSuccess() {
             const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
             const s = String(elapsedSeconds % 60).padStart(2, '0');
-            const finalScore = score; 
+            const finalScore = score;
+
+            // ✨ [메인 연동] 70점 이상이면 completedSteps에 저장 → index.html 진행률 바 반영
+            markStepDone(finalScore);
 
             const content = document.getElementById('modalContent');
             content.innerHTML = `
@@ -1342,6 +1372,20 @@
         }
 
         window.onload = function() {
+            // ✨ [메인 연동] 저장된 상태 복원 (새로고침 후에도 유지)
+            try {
+                const savedStatus = localStorage.getItem('status_step' + THIS_STEP);
+                if(savedStatus) {
+                    document.body.classList.add('status-' + savedStatus);
+                }
+                // 이미 완료된 단계면 메뉴 뱃지 표시
+                const done = JSON.parse(localStorage.getItem('completedSteps') || '[]');
+                if(done.includes(THIS_STEP)) {
+                    const activeMenu = document.querySelector('.menu-link.active');
+                    if(activeMenu) activeMenu.textContent += ' ✓';
+                }
+            } catch(e) {}
+
             const wordBank = document.querySelector('.word-bank');
             if(wordBank) {
                 for (let i = wordBank.children.length; i >= 0; i--) {
