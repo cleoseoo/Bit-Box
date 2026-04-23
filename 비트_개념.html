@@ -578,7 +578,7 @@
 
                     <div id="quizForm">
                         <div class="quiz-box">1. 컴퓨터 정보 표현의 <input type="text" class="blank" data-answer="가장 작은" data-score="15" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 단위를 비트(Bit)라고 합니다. <span style="color:var(--apple-red); font-weight:900;">[15점]</span></div>
-                        <div class="quiz-box">2. 1비트는 <input type="text" class="blank" data-answer="0" data-score="15" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled>과 <input type="text" class="blank" data-answer="1" data-score="15" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled>, 두 가지 상태를 표현합니다. <button class="hint-btn" onclick="toggleHint(this, '전구의 꺼짐과 켜짐 신호를 떠올려보세요.')">힌트 💡</button><span class="hint-display"></span> <span style="color:var(--apple-red); font-weight:900;">[30점]</span></div>
+                        <div class="quiz-box">2. 1비트는 <input type="text" class="blank" data-answer="0" data-score="15" data-swap="true" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled>과 <input type="text" class="blank" data-answer="1" data-score="15" data-swap="true" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled>, 두 가지 상태를 표현합니다. <button class="hint-btn" onclick="toggleHint(this, '전구의 꺼짐과 켜짐 신호를 떠올려보세요.')">힌트 💡</button><span class="hint-display"></span> <span style="color:var(--apple-red); font-weight:900;">[30점]</span></div>
                         <div class="quiz-box">3. 0과 1만을 사용하여 정보를 표현하는 체계를 <input type="text" class="blank" data-answer="이진수" data-score="20" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled>라고 합니다. <span style="color:var(--apple-red); font-weight:900;">[20점]</span></div>
                         <div class="quiz-box">4. 비트 1개는 서로 다른 <input type="text" class="blank" data-answer="두" data-score="15" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 가지 상태를 표현할 수 있습니다. <span style="color:var(--apple-red); font-weight:900;">[15점]</span></div>
                         <div class="quiz-box" style="margin-bottom:0;">5. 디지털 세상의 모든 데이터는 이 <input type="text" class="blank" data-answer="최소" data-score="20" oninput="check(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 단위인 비트에서 시작됩니다. <span style="color:var(--apple-red); font-weight:900;">[20점]</span></div>
@@ -833,12 +833,24 @@
         }
         
         function check(el) {
-            if (!isQuizStarted) return; 
-            if (el.value.trim() === el.getAttribute('data-answer') && !scored.has(el)) {
+            if (!isQuizStarted) return;
+            const userVal = el.value.trim();
+            const answer  = el.getAttribute('data-answer');
+
+            // 0↔1 순서 무관 처리: data-swap="true"인 빈칸은 형제 빈칸과 교차 정답도 허용
+            let isCorrect = (userVal === answer);
+            if (!isCorrect && el.dataset.swap === 'true') {
+                const siblings = Array.from(el.closest('.quiz-box').querySelectorAll('.blank[data-swap="true"]'));
+                const other = siblings.find(s => s !== el);
+                if (other) {
+                    isCorrect = (userVal === other.getAttribute('data-answer'));
+                }
+            }
+
+            if (isCorrect && !scored.has(el)) {
                 el.classList.add('correct'); 
                 el.disabled = true;
                 scored.add(el); 
-                
                 score += parseInt(el.getAttribute('data-score'));
                 correctAnswers++;
             }
