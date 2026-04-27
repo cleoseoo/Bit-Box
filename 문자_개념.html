@@ -298,8 +298,6 @@
         .erase-section { background: rgba(255,255,255,0.5); border-radius: 28px 0 0 28px; border: 1px solid rgba(239,68,68,0.15); border-right: none; padding: 14px 20px 14px 18px; display: flex; align-items: center; }
         .erase-btn { flex:1; background: transparent; border: 1.5px solid rgba(239,68,68,0.3); color: rgba(239,68,68,0.7); border-radius: 12px; padding: 9px 14px; font-size: 0.8rem; font-weight: 800; cursor: pointer !important; transition: all 0.2s ease; font-family: 'Pretendard','Inter',sans-serif; line-height: 1.4; text-align: center; }
         .erase-btn:hover { background: #fef2f2; border-color: #ef4444; color: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.12); }
-
-        .modal-content-small { background: white; padding: 32px 28px; border-radius: 28px; width: 400px; max-width: 92vw; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); animation: popUp 0.3s ease-out; }
 </style>
 </head>
 <body>
@@ -394,10 +392,10 @@
                         </div>
                         <p style="margin:0;">
                             <strong>✅ 아스키코드 (ASCII):</strong> 영어 대소문자, 숫자, 기본 특수문자를 표현하기 위해 만든 <button class="inline-reveal-btn" onclick="revealInline(this, '미국의 표준 약속', 'var(--apple-blue)', '#e0f2fe')">❓ 확인</button>입니다.<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 0.9em; color:var(--text-sub); font-weight: 500;">(글자당 1바이트(7~8비트) 사용 / 총 256개 문자 표현 가능)</span><br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 0.9em; color:var(--text-sub); font-weight: 500;">(글자당 1바이트 사용 / 7비트 표준 128개, 8비트 확장 256개 문자 표현 가능)</span><br><br>
                             
                             <strong>✅ 유니코드 (Unicode):</strong> 전 세계 모든 언어와 기호(이모티콘 등)에 <b>고유한 일련번호</b>를 매겨 놓은 <button class="inline-reveal-btn" onclick="revealInline(this, '국제 표준 번호판(사전)', '#0284c7', '#e0f2fe')">❓ 확인</button>입니다.<br>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 0.9em; color:var(--text-sub); font-weight: 500;">(각 문자마다 고유의 주소값을 가짐. 예: '가' = U+AC00)</span><br><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size: 0.9em; color:var(--text-sub); font-weight: 500;">(16비트로 각 문자마다 고유의 주소값을 가짐. 예: '가' = U+AC00)</span><br><br>
 
                             <strong>✅ UTF-8:</strong> 유니코드 번호를 컴퓨터가 실제로 저장할 수 있는 <b>이진수로 변환(인코딩)</b>하는 가장 대표적인 방식입니다. <br>
                             &nbsp;&nbsp;&nbsp;&nbsp;글자의 종류에 따라 <b>1바이트에서 최대 <button class="inline-reveal-btn purple" onclick="revealInline(this, '4바이트(32비트)', 'var(--indigo-blue)', '#e0e7ff')">❓ 확인</button>까지 고무줄처럼 용량을 늘려 쓰기 때문에</b> 전 세계 표준으로 쓰입니다.<br>
@@ -768,7 +766,7 @@
         function renderAsciiTable() {
             const container = document.getElementById('ascii-table');
             let html = '';
-            const hiddenDecimals = [32, 33, 48, 65, 97, 122]; 
+            const hiddenDecimals = [33, 48, 65, 97, 122]; 
             
             for(let i = 32; i <= 126; i++) {
                 let char = String.fromCharCode(i);
@@ -949,7 +947,6 @@
 
         function openTipPopup() {
             const content = document.getElementById('modalContent');
-            content.className = 'modal-content';
             content.innerHTML = `
                 <h3 style="color:var(--apple-blue);">💡 미션 가이드</h3>
                 <p style="line-height:1.8; text-align:left; padding:0 20px; font-size:1.05rem; word-break:keep-all;">
@@ -1222,7 +1219,6 @@
 // 🔥 엔터키로 경고 팝업창 닫기 기능 추가
         function eraseStepContent() {
             const content = document.getElementById('modalContent');
-            content.className = 'modal-content-small';
             content.innerHTML = `
                 <div style="font-size:2.2rem; margin-bottom:10px;">🗑️</div>
                 <h3 style="color:#ef4444; margin-bottom:10px; font-size:1.2rem; font-weight:900;">이 단원 학습 내용 지우기</h3>
@@ -1259,7 +1255,7 @@
                     activeMenu.textContent = activeMenu.textContent.replace(' ✓', '');
                 }
             } catch(e) {}
-            const dc = document.getElementById('modalContent'); dc.className = 'modal-content-small'; dc.innerHTML = `
+            document.getElementById('modalContent').innerHTML = `
                 <div style="font-size:2.2rem; margin-bottom:10px;">✅</div>
                 <h3 style="margin-bottom:10px; font-size:1.2rem; font-weight:900;">삭제 완료!</h3>
                 <p style="font-size:0.9rem; color:#555; margin-bottom:18px;">이 단원의 학습 내용이 모두 삭제되었습니다.</p>
