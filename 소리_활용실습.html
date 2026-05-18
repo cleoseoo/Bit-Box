@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=1920">
     <title>DIGITAL AUDIO STUDIO: PCM & MIDI</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -28,7 +27,7 @@
             --music-accent-success: #14b8a6; 
         }
 
-        * { box-sizing: border-box; user-select: none; font-family: 'Pretendard', sans-serif; touch-action: manipulation; }
+        * { box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; user-select: none; font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', 'Noto Sans KR', sans-serif; touch-action: manipulation; }
         body, html { 
             margin: 0; padding: 0; width: 100vw; height: 100vh; 
             background-color: var(--bg-deep);
@@ -66,7 +65,7 @@
             background: rgba(255, 255, 255, 0.08);
             transition: all 0.18s ease;
             white-space: nowrap;
-            cursor: pointer;
+            cursor: pointer !important;
         }
         #dbb-topnav a.dbb-btn:hover, #dbb-topnav button.dbb-btn:hover {
             background: rgba(255, 255, 255, 0.18);
@@ -156,7 +155,7 @@
            ========================================================== */
         #midi-mode .dashboard { margin-top: 60px; }
         
-        .dashboard { background: rgba(11, 19, 32, 0.85); border: 2px solid rgba(255, 0, 60, 0.3); border-radius: 12px; padding: 2vh 2vw; box-shadow: 0 0 50px rgba(255, 0, 60, 0.1), inset 0 0 20px rgba(0,0,0,0.8); backdrop-filter: blur(10px); width: 98vw; max-width: 1800px; height: 90vh; display: flex; flex-direction: column; gap: 1.5vh; }
+        .dashboard { background: rgba(11, 19, 32, 0.85); border: 2px solid rgba(255, 0, 60, 0.3); border-radius: 12px; padding: 2vh 2vw; box-shadow: 0 0 50px rgba(255, 0, 60, 0.1), inset 0 0 20px rgba(0,0,0,0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); width: 98vw; max-width: 1800px; height: 90vh; display: flex; flex-direction: column; gap: 1.5vh; }
         .dashboard .title { color: var(--cyber-magenta); text-shadow: 0 0 15px rgba(255, 0, 60, 0.6); }
         .dashboard .lcd-panel { border-color: var(--cyber-magenta); box-shadow: inset 0 0 20px rgba(255, 0, 60, 0.15); }
         
@@ -175,9 +174,9 @@
 
         .piano-wrapper { width: 100%; flex-grow: 1; background: #000; border-radius: 4px; border: 1px solid #1E293B; overflow: hidden; position: relative; }
         #piano { position: relative; width: 100%; height: 100%; display: block; }
-        .white-key { position: absolute; height: 100%; background: var(--key-white); border: 1px solid #94A3B8; border-top: none; border-radius: 0 0 6px 6px; cursor: pointer; box-shadow: inset -1px -5px 10px rgba(0,0,0,0.2); transition: 0.1s; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 1.5vh; }
+        .white-key { position: absolute; height: 100%; background: var(--key-white); border: 1px solid #94A3B8; border-top: none; border-radius: 0 0 6px 6px; cursor: pointer !important; box-shadow: inset -1px -5px 10px rgba(0,0,0,0.2); transition: 0.1s; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 1.5vh; }
         .white-key.active { background: var(--cyber-magenta); box-shadow: 0 0 30px var(--cyber-magenta); transform: translateY(2px);}
-        .black-key { position: absolute; height: 60%; background: var(--key-black); border: 1px solid #334155; border-top: none; border-radius: 0 0 4px 4px; cursor: pointer; z-index: 2; transition: 0.1s; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 1.2vh; }
+        .black-key { position: absolute; height: 60%; background: var(--key-black); border: 1px solid #334155; border-top: none; border-radius: 0 0 4px 4px; cursor: pointer !important; z-index: 2; transition: 0.1s; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 1.2vh; }
         .black-key.active { background: var(--cyber-cyan); box-shadow: 0 0 25px var(--cyber-cyan);}
         .bin-label { font-family: 'Orbitron'; font-weight: 800; text-align: center; margin-bottom: 6px; line-height: 1; }
         .white-key .bin-label { color: #000; font-size: clamp(0.6rem, 1vw, 1rem); }
@@ -187,11 +186,15 @@
         .c-badge { background: #FF003C; color: #FFF; padding: 4px 8px; border-radius: 4px; font-size: clamp(0.6rem, 0.9vw, 0.9rem); position: absolute; top: 1.5vh; font-family: 'Orbitron'; font-weight: bold;}
 
         .terminal { width: 100%; height: 28vh; min-height: 180px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255, 0, 60, 0.4); border-radius: 6px; padding: 1.5vh 2vw; display: flex; flex-direction: column; gap: 1vh; }
-        .code-input { width: 100%; flex-grow: 1; background: #050B14; border: 1px solid #1E293B; color: var(--cyber-green); font-size: clamp(1.1rem, 1.5vw, 1.5rem); padding: 1vh 1vw; outline: none; letter-spacing: 2px; border-radius: 4px; resize: none; }
+        .code-input { width: 100%; flex-grow: 1; background: #050B14; border: 1px solid #1E293B; color: var(--cyber-green); font-size: clamp(1.1rem, 1.5vw, 1.5rem); padding: 1vh 1vw; outline: none; letter-spacing: 2px; border-radius: 4px; resize: none; -webkit-user-select: text; -moz-user-select: text; user-select: text; cursor: text !important; }
         .controls { display: flex; gap: 1.5vw; justify-content: flex-end; flex-wrap: wrap; align-items: center;}
         .tempo-box { display: flex; align-items: center; gap: 10px; background: rgba(252, 226, 5, 0.1); padding: 5px 15px; border-radius: 4px; border: 1px solid rgba(252, 226, 5, 0.3);}
-        input[type=range] { cursor: pointer; accent-color: var(--cyber-yellow); }
-        .btn { background: transparent; border: 1px solid var(--cyber-magenta); color: var(--cyber-magenta); padding: 1vh 1.2vw; font-size: clamp(0.7rem, 1vw, 0.9rem); font-weight: 900; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        input[type=range] { cursor: pointer !important; accent-color: var(--cyber-yellow); -webkit-appearance: none; appearance: none; }
+        input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: #1E293B; }
+        input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: #1E293B; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--cyber-yellow); cursor: pointer !important; margin-top: -5px; box-shadow: 0 0 8px rgba(252,226,5,0.5); }
+        input[type=range]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--cyber-yellow); cursor: pointer !important; border: none; box-shadow: 0 0 8px rgba(252,226,5,0.5); }
+        .btn { background: transparent; border: 1px solid var(--cyber-magenta); color: var(--cyber-magenta); padding: 1vh 1.2vw; font-size: clamp(0.7rem, 1vw, 0.9rem); font-weight: 900; border-radius: 4px; cursor: pointer !important; transition: 0.2s; }
         .btn:hover { background: rgba(255, 0, 60, 0.1); }
         .btn.play-btn { background: var(--cyber-magenta); color: #000; min-width: 110px; }
         .btn.stop-btn { background: var(--cyber-yellow); border-color: var(--cyber-yellow); color: #000; min-width: 110px; }
@@ -215,7 +218,7 @@
             <div class="gate-content">
                 <div class="gate-title">PCM MODE</div>
                 <div class="gate-desc">
-                    <span style="color:#d946ef;">WAVE HACKER (데이터 팩토리)</span><br>
+                    <span style="color:#d946ef;">소리 변환기</span><br>
                     아날로그 파동을 디지털로 변환하라!<br>
                     [표본화 ➡️ 양자화 ➡️ 부호화 3단계 변환 실습]
                 </div>
@@ -237,7 +240,7 @@
         
         <div id="pcm-container">
             <div id="pcm-header">
-                <h1 class="pcm-title">WAVE HACKER 1.0</h1>
+                <h1 class="pcm-title">소리 변환기</h1>
                 
                 <div class="pcm-toolbar">
                     <div class="timer-box">⏱️ <span id="pcm-timer-txt">00:00</span></div>
@@ -261,14 +264,14 @@
                 <canvas id="pcmCanvas"></canvas>
                 
                 <div id="pcm-intro" class="pcm-overlay">
-                    <h2>WAVE HACKER 1.0</h2>
+                    <h2>디지털 소리 변환기</h2>
                     <p>
-                        아날로그 소리를 컴퓨터 데이터로 변환하는 3단계 팩토리입니다.<br><br>
-                        1. <b>[표본화]</b> 레이저가 기둥을 지날 때 <span class="instr-highlight">[스페이스바]</span>를 눌러 파형의 점을 추출하세요.<br>
-                        2. <b>[양자화]</b> 추출된 점들을 <span class="instr-highlight">[마우스 드래그]</span>하여 가장 가까운 눈금으로 반올림하세요.<br>
-                        3. <b>[부호화]</b> 완성된 눈금 숫자를 3자리 이진수(0,1)로 <span class="instr-highlight">[타이핑]</span> 하세요!
+                        아날로그 소리를 컴퓨터 데이터로 변환하는 3단계 변환기입니다.<br><br>
+                        1. <b>[표본화]</b> 스캐너가 기둥(일정한 시간 간격)에 닿을 때마다 <span class="instr-highlight">[스페이스바]</span>를 눌러 그 순간의 소리 크기를 기록하세요.<br>
+                        2. <b>[양자화]</b> 기록된 점들을 <span class="instr-highlight">[마우스 드래그]</span>하여 가장 가까운 정수 값으로 반올림하세요.<br>
+                        3. <b>[부호화]</b> 정수 값을 3자리 이진수(0과 1)로 <span class="instr-highlight">[입력]</span> 하세요!
                     </p>
-                    <button class="pcm-btn" onclick="startPcmGame()">팩토리 가동 시작</button>
+                    <button class="pcm-btn" onclick="startPcmGame()">변환기 동작 시작</button>
                 </div>
 
                 <div id="pcm-result" class="pcm-overlay hidden">
