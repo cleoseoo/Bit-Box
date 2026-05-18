@@ -15,7 +15,14 @@
             --accent-blue: #0984e3; --accent-green: #00b894; --accent-red: #d63031;
             --accent-violet: #6c5ce7; --glass-border: rgba(255, 255, 255, 0.8);
         }
-        * { cursor: default !important; box-sizing: border-box; }
+        * { cursor: default !important; box-sizing: border-box; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+        /* ── 크로스 브라우저: input[type=range] Safari 지원 ── */
+        input[type=range] { -webkit-appearance: none; appearance: none; }
+        input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 4px; background: #e2e8f0; }
+        input[type=range]::-moz-range-track { height: 8px; border-radius: 4px; background: #e2e8f0; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--multi-violet); cursor: pointer !important; margin-top: -6px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+        input[type=range]::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--multi-violet); cursor: pointer !important; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
         ::-webkit-scrollbar { width: 14px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(108, 92, 231, 0.25); border-radius: 20px; border: 4px solid transparent; background-clip: padding-box; }
@@ -28,7 +35,7 @@
         .header-left { display: flex; align-items: center; gap: 15px; }
         .target-badge { background: #1d1d1f; color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; letter-spacing: 0.5px; }
         .main-title { font-size: 1.4rem; font-weight: 900; margin: 0; letter-spacing: -0.02em; color: var(--text-main); cursor: pointer; transition: 0.3s; }
-        .main-title:hover { background: linear-gradient(135deg, var(--multi-pink) 0%, var(--multi-violet) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .main-title:hover { background: linear-gradient(135deg, var(--multi-pink) 0%, var(--multi-violet) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
         .status-controller { display: flex; gap: 8px; }
         .status-btn { padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; border: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.9); color: var(--text-main); cursor: pointer !important; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
         .status-btn:hover { transform: translateY(-2px); background: #f9f9f9; }
@@ -45,7 +52,7 @@
         .dropdown li a:hover { background: var(--menu-active-bg); color: var(--menu-active-text); }
         main { flex: 1; display: flex; overflow: hidden; position: relative; z-index: 1000; width: 100%; }
         .content-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 20px 100px 20px; }
-        .glass-panel { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 28px; padding: 40px 45px; width: 100%; max-width: 1000px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.9); min-height: 500px; height: auto; display: flex; flex-direction: column; flex-shrink: 0; margin-bottom: 40px; }
+        .glass-panel { background: rgba(255, 255, 255, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 28px; padding: 40px 45px; width: 100%; max-width: 1200px; position: relative; box-shadow: 0 15px 35px rgba(0,0,0,0.05), inset 0 0 0 1px rgba(255,255,255,0.9); min-height: 500px; height: auto; display: flex; flex-direction: column; flex-shrink: 0; margin-bottom: 40px; }
         .step-container { width: 100%; transition: opacity 0.4s ease, transform 0.4s ease; display: none; opacity: 0; transform: translateX(20px); flex: 1; flex-direction: column; }
         .step-container.active { display: flex; opacity: 1; transform: translateX(0); }
         .step-navigation { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 25px; padding-top: 20px; border-top: 1px dashed rgba(0,0,0,0.1); }
@@ -56,19 +63,19 @@
         .nav-arrow svg { width: 30px; height: 30px; fill: var(--multi-violet); }
         .nav-arrow.next { margin-left: auto; }
         .nav-arrow.prev { margin-right: auto; }
-        .sidebar-right { width: 360px; display: flex; flex-direction: column; flex-shrink: 0; padding: 30px 0 35px 20px; gap: 20px; z-index: 1000; background: transparent; border: none; }
+        .sidebar-right { width: 380px; display: flex; flex-direction: column; flex-shrink: 0; padding: 30px 0 35px 20px; gap: 20px; z-index: 1000; background: transparent; border: none; }
         .memo-section, .reflection-section { background: linear-gradient(135deg, rgba(228, 222, 255, 0.9) 0%, rgba(190, 175, 255, 0.75) 100%); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 28px 0 0 28px; border: 1px solid rgba(255, 255, 255, 0.8); border-right: none; padding: 25px 30px 25px 25px; display: flex; flex-direction: column; box-shadow: inset 2px 2px 8px rgba(255,255,255,0.6), -10px 10px 30px rgba(108, 92, 231, 0.15); }
         .memo-section { flex: 0.55; }
         .reflection-section { flex: 0.45; }
         .sidebar-title { font-weight: 900; color: #1e1e2f; margin-bottom: 12px; font-size: 1.05rem; }
         .memo-area::placeholder, .reflection-area::placeholder { color: #64748b; font-weight: 400; opacity: 1; }
-        .memo-area { flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; background-image: linear-gradient(rgba(108, 92, 231, 0.25) 1px, transparent 1px); background-size: 100% 1.8rem; cursor: text !important; font-family: 'Pretendard', sans-serif; color: #1d1d1f; }
-        .reflection-area { flex: 1; border: 1px solid rgba(255,255,255,0.9); border-radius: 14px; background: rgba(255,255,255,0.7); resize: none; padding: 15px; font-size: 0.9rem; line-height: 1.6; outline: none; margin-bottom: 12px; cursor: text !important; font-family: 'Pretendard', sans-serif; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); transition: 0.3s; color: #1d1d1f; }
+        .memo-area { flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; background-image: linear-gradient(rgba(108, 92, 231, 0.25) 1px, transparent 1px); background-size: 100% 1.8rem; cursor: text !important; font-family: 'Pretendard', sans-serif; color: #1d1d1f; -webkit-user-select: text; -moz-user-select: text; user-select: text; }
+        .reflection-area { flex: 1; border: 1px solid rgba(255,255,255,0.9); border-radius: 14px; background: rgba(255,255,255,0.7); resize: none; padding: 15px; font-size: 0.9rem; line-height: 1.6; outline: none; margin-bottom: 12px; cursor: text !important; font-family: 'Pretendard', sans-serif; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); transition: 0.3s; color: #1d1d1f; -webkit-user-select: text; -moz-user-select: text; user-select: text; }
         .reflection-area:focus { background: white; border-color: var(--multi-violet); box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2); }
         .capture-tip { font-size: 0.75rem; color: var(--multi-violet); font-weight: 800; background: rgba(255,255,255,0.85); padding: 8px; border-radius: 10px; border: 1px dashed var(--multi-violet-light); text-align: center; }
         .slide-section { background: linear-gradient(135deg, #f8f6ff 0%, #fff0f5 100%); border-radius: 22px; padding: 30px; margin-bottom: 25px; border: 1px solid rgba(108, 92, 231, 0.1); box-shadow: inset 0 0 20px rgba(108, 92, 231, 0.03); width: 100%; box-sizing: border-box; text-align: center; }
         .visual-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; color: var(--multi-violet); }
-        .wave-container { position: relative; width: 600px; height: 300px; margin: 20px auto 0; background: rgba(18, 10, 33, 0.8); border-radius: 16px; border: 3px solid rgba(255,255,255,0.5); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
+        .wave-container { position: relative; width: 100%; max-width: 700px; height: 300px; margin: 20px auto 0; background: rgba(18, 10, 33, 0.8); border-radius: 16px; border: 3px solid rgba(255,255,255,0.5); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
         #soundVisCanvas { width: 100%; height: 100%; display: block; }
         .scan-line { position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #00cec9; box-shadow: 0 0 15px #00cec9; display: none; z-index: 10; }
         .action-btn { background: var(--multi-violet); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer !important; transition: 0.2s; margin-top: 20px; font-size: 1rem; }
@@ -90,10 +97,10 @@
         .sound-lab { display: flex; gap: 20px; align-items: stretch; justify-content: center; margin-top: 10px; width: 100%; }
         .lab-panel { flex: 1; background: #fafafa; padding: 25px; border-radius: 22px; border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; box-shadow: 0 8px 20px rgba(0,0,0,0.02); position: relative; }
         .panel-title { font-size: 1.15rem; font-weight: 900; color: var(--multi-violet); margin-bottom: 15px; width: 100%; text-align: left; padding-bottom: 10px; border-bottom: 2px dashed rgba(0,0,0,0.1); }
-        .draw-area, .sample-grid { position: relative; width: 420px; height: 220px; background: white; border: 1px solid #ced4da; border-radius: 8px; margin: 30px auto 20px; overflow: visible; display: block;}
+        .draw-area, .sample-grid { position: relative; width: 100%; max-width: 420px; height: 220px; background: white; border: 1px solid #ced4da; border-radius: 8px; margin: 30px auto 20px; overflow: visible; display: block;}
         .draw-area { cursor: crosshair !important; touch-action: none; }
         #drawCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; touch-action: none; border-radius: 8px; }
-        .lab-btn-group { display: flex; gap: 10px; width: 100%; margin-top: 10px; max-width: 420px; }
+        .lab-btn-group { display: flex; gap: 10px; width: 100%; margin-top: 10px; max-width: 420px; box-sizing: border-box; }
         .lab-action-btn { flex: 1; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer !important; transition: 0.2s; font-size: 1rem; border: none; color: white; }
         #btnSample { background: var(--multi-violet); }
         #btnSample:hover { background: #5e49cc; }
@@ -101,7 +108,7 @@
         #btnReset:hover { background: #636e72; }
         .draw-hint-box { margin-top: 15px; font-size: 0.85rem; color: #d63031; font-weight: 800; background: #ffeaa7; padding: 10px 15px; border-radius: 8px; width: 100%; max-width: 420px; text-align: center; border: 1px dashed #fdcb6e; }
         .draw-hint-box.hidden { display: none; }
-        .input-row { position: relative; width: 420px; height: 35px; margin: 0 auto 15px auto; display: block; }
+        .input-row { position: relative; width: 100%; max-width: 420px; height: 35px; margin: 0 auto 15px auto; display: block; }
         .q-input, .b-input { position: absolute; text-align: center; padding: 6px 0; border: 2px solid #ced4da; border-radius: 8px; font-weight: 800; outline: none; font-family: 'JetBrains Mono', monospace; cursor: text !important; transition: all 0.3s ease; transform: translateX(-50%); background: white;}
         .q-input { width: 26px; font-size: 0.95rem; }
         .b-input { width: 34px; font-size: 0.8rem; }
@@ -198,7 +205,7 @@
                 <div id="step1-visual" class="step-container active">
                     <div class="slide-section">
                         <div class="visual-title">💡 우리의 목소리는 컴퓨터에 어떻게 저장될까?</div>
-                        <div style="font-size: 0.95rem; color: #424245; font-weight: 700;">아래 [소리 재생 및 변환] 버튼을 눌러 부드러운 소리 파형이 0과 1로 쪼개지는 과정을 관찰하세요!</div>
+                        <div style="font-size: 0.95rem; color: #424245; font-weight: 700;">아래 [디지털 변환 과정 보기] 버튼을 눌러 부드러운 소리 파형이 0과 1로 쪼개지는 과정을 관찰하세요!</div>
                         <div class="wave-container" id="waveContainer">
                             <canvas id="soundVisCanvas" width="600" height="300"></canvas>
                             <div class="scan-line" id="scanLine"></div>
@@ -256,7 +263,7 @@
                             <div class="panel-title" id="rightPanelTitle">2. 양자화 & 부호화 실습 (3비트)</div>
                             <div class="sample-grid" id="sampleGrid"></div>
                             
-                            <div id="manualInputsArea" style="width: 420px; margin: 0 auto; position: relative;">
+                            <div id="manualInputsArea" style="width: 100%; max-width: 420px; margin: 0 auto; position: relative;">
                                 <div style="font-size: 0.85rem; color: #495057; font-weight: 800; margin-bottom: 5px; padding-left: 20px;">양자화 (위 점의 높이 눈금 0~7 입력)</div>
                                 <div class="input-row" id="quantInputs"></div>
                                 <div style="font-size: 0.85rem; color: #495057; font-weight: 800; margin-bottom: 5px; padding-left: 20px;">부호화 (3비트 이진수 입력)</div>
@@ -285,33 +292,32 @@
                                 <!-- 파일 미선택 안내 (파일 없을 때만 표시) -->
                                 <p id="uploadNoFileMsg" style="font-size: 0.82rem; color: #86868b; margin: 0 0 8px 0; font-weight: 700; text-align:center;">mp3, wav 등의 오디오 파일을 선택해주세요.</p>
 
-                                <!-- 샘플링 레이트 + 비트 깊이 조절 (항상 표시, 파일 없으면 비활성) -->
+                                <!-- 샘플링 레이트 조절 -->
                                 <div id="uploadSliderGroup" style="opacity:0.35; pointer-events:none; width:100%; display:flex; flex-direction:column; gap:8px;">
 
-                                    <!-- 🎚️ 샘플링 레이트 -->
                                     <div style="font-weight: 900; color: var(--multi-violet); font-size: 0.95rem;">
-                                        🎚️ 샘플링 레이트 (Hz)
-                                        <span style="font-size:0.78rem; font-weight:700; color:#888; margin-left:6px;">1초에 몇 번 측정하는가</span>
+                                        🎚️ 샘플링 개수 (1초에 몇 번 측정?)
                                     </div>
-                                    <input type="range" id="uploadSampleSlider" min="500" max="44100" step="100" value="44100"
+                                    <input type="range" id="uploadSampleSlider" min="50" max="44100" step="50" value="44100"
                                         oninput="onUploadSliderChange()" onchange="onUploadSliderRelease()"
-                                        style="width: 100%; cursor: pointer; accent-color: var(--multi-violet); height: 8px; border-radius: 4px;">
-                                    <div id="uploadSliderValDisplay" style="font-weight: 900; color: var(--apple-red); text-align: center; font-size: 1.05rem; margin-bottom:2px;">44100 Hz (원본)</div>
-                                    <p style="font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; margin: 0 0 8px 0; line-height: 1.4; background:#f8f6ff; border-radius:8px; padding:6px;">
-                                        낮을수록 시간 축 정보가 줄어들어 소리가 <b>먹먹하게</b> 뭉개집니다.
-                                    </p>
+                                        style="width: 100%; cursor: pointer; accent-color: var(--multi-violet); height: 10px; border-radius: 5px;">
 
-                                    <!-- 🎛️ 비트 깊이 -->
-                                    <div style="font-weight: 900; color: #00b894; font-size: 0.95rem;">
-                                        🎛️ 비트 깊이 (bit depth)
-                                        <span style="font-size:0.78rem; font-weight:700; color:#888; margin-left:6px;">소리 크기를 몇 단계로 나누는가</span>
+                                    <!-- 현재 값 + 기준점 표시 -->
+                                    <div id="uploadSliderValDisplay" style="font-weight: 900; color: var(--apple-red); text-align: center; font-size: 1.1rem;">44,100번/초 (CD 음질 · 원본)</div>
+                                    <div id="uploadQualityLabel" style="font-weight: 800; color: var(--multi-violet); text-align:center; font-size:0.88rem; background:#f8f6ff; border-radius:8px; padding:6px 8px;">
+                                        💿 CD 음질 — 1초에 44,100번 측정. 사람이 들을 수 있는 모든 소리를 담아냅니다
                                     </div>
-                                    <input type="range" id="uploadBitSlider" min="1" max="16" step="1" value="16"
-                                        oninput="onBitSliderChange()" onchange="onBitSliderRelease()"
-                                        style="width: 100%; cursor: pointer; accent-color: #00b894; height: 8px; border-radius: 4px;">
-                                    <div id="uploadBitValDisplay" style="font-weight: 900; color: #00b894; text-align: center; font-size: 1.05rem; margin-bottom:2px;">16비트 → 65,536단계 (원본)</div>
-                                    <p style="font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; margin: 0; line-height: 1.4; background:#f0fff8; border-radius:8px; padding:6px;">
-                                        낮을수록 진폭 단계 수가 줄어들어 소리가 <b>거칠고 지직거립니다</b>.
+
+                                    <!-- 기준점 눈금 (JS 경계값과 일치) -->
+                                    <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#aaa; font-weight:700; padding:0 2px; margin-top:-4px;">
+                                        <span>50<br>최저(거의 무음)</span>
+                                        <span style="text-align:center;">8,000<br>AM라디오</span>
+                                        <span style="text-align:center;">28,000<br>FM라디오</span>
+                                        <span style="text-align:right;">44,100<br>CD</span>
+                                    </div>
+
+                                    <p style="font-size: 0.8rem; color: #666; font-weight: 700; text-align: center; margin: 4px 0 0 0; line-height: 1.5; background:#fff3cd; border-radius:8px; padding:7px; border-left: 3px solid #ffc107;">
+                                        💡 숫자를 낮출수록 측정 횟수가 줄어 소리 정보가 빠져나가고,<br>소리가 <b>먹먹하고 뭉개진 것처럼</b> 들립니다.
                                     </p>
                                 </div>
 
@@ -323,7 +329,7 @@
                             <div class="lab-panel" style="flex: 1;">
                                 <div class="panel-title">2. 실시간 소리 파형 시각화</div>
                                 <div style="width: 100%; height: 220px; background: #1e272e; border-radius: 8px; position: relative; overflow: hidden; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
-                                    <canvas id="realtimeWaveCanvas" width="420" height="220" style="width: 100%; height: 100%; display: block;"></canvas>
+                                    <canvas id="realtimeWaveCanvas" width="840" height="440" style="width: 100%; height: 100%; display: block;"></canvas>
                                 </div>
                                 <p style="font-size: 0.85rem; color: #666; font-weight: 700; text-align: center; margin-top: 15px;">음질이 낮아지면 우측 파형이 어떻게 변하는지 관찰해보세요.</p>
                             </div>
@@ -360,7 +366,7 @@
                         <div class="quiz-box">2. 아날로그 파형을 일정한 시간 간격으로 잘게 쪼개어 값을 추출하는 과정을 <input type="text" class="blank" data-answer="표본화" data-score="15" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> (이)라고 합니다. <span style="color:var(--apple-red); font-weight:900;">[15점]</span></div>
                         <div class="quiz-box">3. 1초 동안 추출하는 표본의 개수를 샘플링 레이트라고 하며, 단위는 <input type="text" class="blank" data-answer="헤르츠(Hz)" data-score="15" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 를 사용합니다. <span style="color:var(--apple-red); font-weight:900;">[15점]</span></div>
                         <div class="quiz-box">4. 추출된 표본의 진폭 값을 일정한 간격의 숫자로 맞추어 정수로 반올림하여 표현하는 과정을 <input type="text" class="blank" data-answer="양자화" data-score="15" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> (이)라고 합니다. <span style="color:var(--apple-red); font-weight:900;">[15점]</span></div>
-                        <div class="quiz-box">5. 표본화를 할 때 소리를 쪼개는 간격(주기)이 짧을수록 원음에 가까워지지만, 처리해야 할 데이터가 늘어나 파일의 <input type="text" class="blank" data-answer="용량" data-score="20" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 이(가) 커지게 됩니다. <span style="color:var(--apple-red); font-weight:900;">[20점]</span></div>
+                        <div class="quiz-box">5. 표본화를 할 때 소리를 쪼개는 간격(주기)이 짧을수록 원음에 가까워지지만, 처리해야 할 데이터가 늘어나 파일의 <input type="text" class="blank" data-answer="용량" data-score="20" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> 이 커지게 됩니다. <span style="color:var(--apple-red); font-weight:900;">[20점]</span></div>
                         <div class="quiz-box" style="margin-bottom:0;">6. 숫자로 변환된 양자화 값을 컴퓨터가 처리할 수 있도록 0과 1의 이진수로 변환하는 과정을 <input type="text" class="blank" data-answer="부호화" data-score="20" oninput="checkAns(this)" ondrop="drop(event)" ondragover="allowDrop(event)" autocomplete="off" disabled> (이)라고 합니다. <span style="color:var(--apple-red); font-weight:900;">[20점]</span></div>
                     </div>
                     <div style="text-align: center; display: none;" id="submitQuizBtnWrap"><button class="submit-quiz-btn" onclick="submitQuiz()">✅ 미션 완료 및 채점하기</button></div>
@@ -549,25 +555,28 @@
 
         // ⭐ 샘플링 레이트 슬라이더 표시 업데이트
         function onUploadSliderChange() {
-            const val = document.getElementById('uploadSampleSlider').value;
-            const max = document.getElementById('uploadSampleSlider').max;
-            document.getElementById('uploadSliderValDisplay').innerText = val + " Hz" + (val == max ? " (원본)" : "");
-        }
+            const val = parseInt(document.getElementById('uploadSampleSlider').value);
+            const max = parseInt(document.getElementById('uploadSampleSlider').max);
 
-        // ⭐ 비트 깊이 슬라이더 표시 업데이트
-        function onBitSliderChange() {
-            const bits = parseInt(document.getElementById('uploadBitSlider').value);
-            const steps = Math.pow(2, bits).toLocaleString('ko-KR');
-            const isOriginal = bits === 16;
-            document.getElementById('uploadBitValDisplay').innerText =
-                bits + "비트 → " + steps + "단계" + (isOriginal ? " (원본)" : "");
-        }
+            // 현재 값 표시
+            const formatted = val.toLocaleString('ko-KR');
+            const isOriginal = (val === max);
+            document.getElementById('uploadSliderValDisplay').innerText =
+                formatted + '번/초' + (isOriginal ? ' (CD 음질 · 원본)' : '');
 
-        // ⭐ 비트 깊이 슬라이더 릴리즈 → 실제 음질 처리
-        function onBitSliderRelease() {
-            if (currentMode === 'upload') {
-                applyResampling();
-            }
+            // 기준점 레이블 (나이퀴스트: 표현 가능 최고 주파수 = 샘플링 레이트 ÷ 2)
+            // 44100Hz → 22050Hz 표현 / 9000Hz → 4500Hz 표현(AM라디오) / 30000Hz → 15000Hz(FM라디오)
+            let label = '';
+            if      (val >= 40000) label = '💿 CD 음질 — 1초에 44,100번 측정. 사람이 들을 수 있는 모든 소리를 담아냅니다';
+            else if (val >= 28000) label = '🎵 FM 라디오 수준 — 1초에 약 30,000번 측정. 음악도 자연스럽게 들립니다';
+            else if (val >= 16000) label = '🎙️ MP3(중간 품질) 수준 — 1초에 약 22,000번 측정. 약간 차이가 느껴집니다';
+            else if (val >= 8000)  label = '📻 AM 라디오 수준 — 1초에 약 9,000번 측정. 소리가 뭉개지기 시작합니다';
+            else if (val >= 5000)  label = '📟 옛날 유선전화 수준 — 목소리는 잘 들리지만 고음이 사라져 음악이 먹먹하게 들립니다';
+            else if (val >= 200)   label = '🔇 매우 낮은 품질 — 소리가 심하게 뭉개져 거의 알아들을 수 없습니다';
+            else                   label = '🔇 거의 무음 — 측정 횟수가 너무 적어 소리 정보가 거의 사라집니다';
+
+            const qualityEl = document.getElementById('uploadQualityLabel');
+            if (qualityEl) qualityEl.innerText = label;
         }
 
         // ⭐ 기존 파형 그리기 슬라이더 (모드 2용)
@@ -616,9 +625,15 @@
                     // 슬라이더 범위를 원본 샘플레이트에 맞게 설정
                     const maxRate = Math.floor(buffer.sampleRate);
                     const slider = document.getElementById('uploadSampleSlider');
-                    slider.max = maxRate;
+                    slider.max   = maxRate;
                     slider.value = maxRate;
+                    // max가 바뀐 후 onUploadSliderChange 호출 → 표시값 정확히 갱신
                     onUploadSliderChange();
+                    // 원본이 CD(44100)가 아닐 경우 초기 레이블도 올바르게 표시
+                    const qualityEl = document.getElementById('uploadQualityLabel');
+                    if (qualityEl && maxRate !== 44100) {
+                        qualityEl.innerText = '💿 원본 음질 — 1초에 ' + maxRate.toLocaleString('ko-KR') + '번 측정';
+                    }
 
                     applyResampling();
                 }, function(err) {
@@ -628,16 +643,13 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // ⭐ 샘플링 레이트(선형보간) + 비트 깊이(양자화) 동시 적용
+        // ⭐ 샘플링 레이트 시뮬레이션 (선형 보간)
+        // 비트 깊이는 제거 — 샘플링 개수 효과에만 집중
         function applyResampling() {
             if (!originalAudioBuffer || currentMode !== 'upload') return;
 
             const simulatedRate = parseInt(document.getElementById('uploadSampleSlider').value);
-            const bits          = parseInt(document.getElementById('uploadBitSlider').value);
             const originalRate  = originalAudioBuffer.sampleRate;
-
-            // 비트 깊이에 따른 양자화 단계 수 (1비트=2단계 ~ 16비트=65536단계)
-            const levels = Math.pow(2, bits);
 
             const degradedBuffer = audioCtx.createBuffer(
                 originalAudioBuffer.numberOfChannels,
@@ -645,6 +657,8 @@
                 originalRate
             );
 
+            // step: 원본에서 몇 개 간격으로 샘플을 읽을지
+            // simulatedRate가 낮을수록 step이 커져 정보가 줄어듦
             const step = originalRate / simulatedRate;
 
             for (let channel = 0; channel < originalAudioBuffer.numberOfChannels; channel++) {
@@ -658,39 +672,41 @@
                 let nextSampleValue = inputData[nextIdx] || 0;
 
                 for (let i = 0; i < inputData.length; i++) {
-                    // ── 샘플링 레이트 시뮬레이션 (선형 보간) ──
+                    // 두 측정값 사이를 직선으로 보간 (선형 보간)
                     if (i >= nextSampleIndex) {
                         lastSampleIndex = nextSampleIndex;
                         lastSampleValue = nextSampleValue;
                         nextSampleIndex += step;
-                        let nIdx = Math.min(Math.floor(nextSampleIndex), inputData.length - 1);
+                        const nIdx = Math.min(Math.floor(nextSampleIndex), inputData.length - 1);
                         nextSampleValue = inputData[nIdx] || 0;
                     }
-                    let t = (i - lastSampleIndex) / step;
-                    let interpolated = lastSampleValue + (nextSampleValue - lastSampleValue) * t;
-
-                    // ── 비트 깊이 양자화: -1~1 범위를 levels 단계로 반올림 ──
-                    // 낮은 비트일수록 계단현상(quantization noise) → 지직거리는 왜곡음 발생
-                    const quantized = Math.round(interpolated * (levels / 2 - 1)) / (levels / 2 - 1);
-                    outputData[i] = Math.max(-1, Math.min(1, quantized));
+                    const t = (i - lastSampleIndex) / step;
+                    outputData[i] = lastSampleValue + (nextSampleValue - lastSampleValue) * t;
                 }
             }
 
-            const wavBlob = bufferToWave(degradedBuffer, originalRate);
+            const wavBlob  = bufferToWave(degradedBuffer, originalRate);
             const audioUrl = URL.createObjectURL(wavBlob);
-            const player = document.getElementById('audioPlayer');
-            
-            const wasPlaying = !player.paused && player.currentTime > 0;
-            const currentTime = player.currentTime;
-            
+            const player   = document.getElementById('audioPlayer');
+
+            const wasPlaying  = !player.paused && player.currentTime > 0;
+            const savedTime   = player.currentTime;
+
+            // ✅ canplay 이벤트 후 재생위치 복원 (크로스 브라우저 안정화)
+            // src 교체 직후 currentTime 설정 시 Safari·Edge에서 오류 발생 방지
+            const onCanPlay = function() {
+                player.removeEventListener('canplay', onCanPlay);
+                if (savedTime > 0) {
+                    try { player.currentTime = savedTime; } catch(e) {}
+                }
+                if (wasPlaying) {
+                    player.play().catch(function() {}); // 자동재생 정책 예외 처리
+                }
+            };
+            player.addEventListener('canplay', onCanPlay);
             player.src = audioUrl;
-            player.currentTime = currentTime;
-            
+
             setupRealtimeVisualization(player);
-            
-            if(wasPlaying) {
-                player.play();
-            }
         }
 
         let mediaElementSource = null;
@@ -698,23 +714,27 @@
         let animationId = null;
 
         function setupRealtimeVisualization(player) {
-            if(!audioCtx) return;
-            
-            if(!analyser) {
+            if (!audioCtx) return;
+
+            // analyser 초기화 (없을 때만 생성)
+            if (!analyser) {
                 analyser = audioCtx.createAnalyser();
                 analyser.fftSize = 2048;
             }
-            
-            if(!mediaElementSource) {
+
+            // mediaElementSource: 한 번만 생성 (Safari·Edge 중복 오류 방지)
+            if (!mediaElementSource) {
                 try {
                     mediaElementSource = audioCtx.createMediaElementSource(player);
                     mediaElementSource.connect(analyser);
                     analyser.connect(audioCtx.destination);
                 } catch (e) {
-                    console.warn("Media element already connected");
+                    // 이미 연결된 경우 무시 (크로스 브라우저 안전)
                 }
             }
 
+            // 기존 애니메이션 중단 후 새로 시작
+            if (animationId) { cancelAnimationFrame(animationId); animationId = null; }
             drawRealtimeWaveform();
         }
 
