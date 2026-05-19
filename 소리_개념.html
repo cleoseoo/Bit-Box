@@ -67,7 +67,6 @@
         .memo-section, .reflection-section { background: linear-gradient(135deg, rgba(228, 222, 255, 0.9) 0%, rgba(190, 175, 255, 0.75) 100%); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-radius: 28px 0 0 28px; border: 1px solid rgba(255, 255, 255, 0.8); border-right: none; padding: 25px 30px 25px 25px; display: flex; flex-direction: column; box-shadow: inset 2px 2px 8px rgba(255,255,255,0.6), -10px 10px 30px rgba(108, 92, 231, 0.15); }
         .memo-section { flex: 0.55; }
         .reflection-section { flex: 0.45; }
-        .sidebar-title { font-weight: 900; color: #1e1e2f; margin-bottom: 12px; font-size: 1.05rem; }
         .memo-area::placeholder, .reflection-area::placeholder { color: #64748b; font-weight: 400; opacity: 1; }
         .memo-area { flex: 1; border: none; background: transparent; resize: none; font-size: 0.95rem; line-height: 1.8; outline: none; background-image: linear-gradient(rgba(108, 92, 231, 0.25) 1px, transparent 1px); background-size: 100% 1.8rem; cursor: text !important; font-family: 'Pretendard', sans-serif; color: #1d1d1f; -webkit-user-select: text; -moz-user-select: text; user-select: text; }
         .reflection-area { flex: 1; border: 1px solid rgba(255,255,255,0.9); border-radius: 14px; background: rgba(255,255,255,0.7); resize: none; padding: 15px; font-size: 0.9rem; line-height: 1.6; outline: none; margin-bottom: 12px; cursor: text !important; font-family: 'Pretendard', sans-serif; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02); transition: 0.3s; color: #1d1d1f; -webkit-user-select: text; -moz-user-select: text; user-select: text; }
@@ -77,7 +76,6 @@
         .visual-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 10px; color: var(--multi-violet); }
         .wave-container { position: relative; width: 100%; max-width: 700px; height: 300px; margin: 20px auto 0; background: rgba(18, 10, 33, 0.8); border-radius: 16px; border: 3px solid rgba(255,255,255,0.5); overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); }
         #soundVisCanvas { width: 100%; height: 100%; display: block; }
-        .scan-line { position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: #00cec9; box-shadow: 0 0 15px #00cec9; display: none; z-index: 10; }
         .action-btn { background: var(--multi-violet); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; cursor: pointer !important; transition: 0.2s; margin-top: 20px; font-size: 1rem; }
         .action-btn:hover { background: #5e49cc; }
         .concept-wrap { display: flex; flex-direction: column; gap: 15px; margin-top: 10px; text-align: left; }
@@ -208,7 +206,6 @@
                         <div style="font-size: 0.95rem; color: #424245; font-weight: 700;">아래 [디지털 변환 과정 보기] 버튼을 눌러 부드러운 소리 파형이 0과 1로 쪼개지는 과정을 관찰하세요!</div>
                         <div class="wave-container" id="waveContainer">
                             <canvas id="soundVisCanvas" width="600" height="300"></canvas>
-                            <div class="scan-line" id="scanLine"></div>
                         </div>
                         <button class="action-btn" onclick="startAudioScan()">▶️ 디지털 변환 과정 보기 (5비트)</button>
                     </div>
@@ -219,7 +216,20 @@
                 <div id="step2-concept" class="step-container">
                     <div style="font-size: 1.3rem; font-weight: 900; color: var(--multi-violet); margin-bottom: 10px; text-align: left; padding-left: 10px;">소리의 디지털화 과정 (PCM)</div>
                     <div class="concept-wrap">
-                        <div class="concept-row"><div class="concept-icon">🌊</div><div style="flex:1;"><b style="color:var(--accent-blue)">아날로그 신호</b> : 자연의 소리처럼 시간이 지남에 따라 끊어짐 없이 연속적으로 부드럽게 변하는 파형입니다.</div></div>
+                        <div class="concept-row"><div class="concept-icon">🌊</div><div style="flex:1;"><b style="color:var(--accent-blue)">아날로그 소리</b> : 자연의 소리처럼 시간이 지남에 따라 끊어짐 없이 연속적으로 부드럽게 변하는 파형입니다.</div></div>
+                        <div class="concept-row"><div class="concept-icon">💻</div><div style="flex:1;"><b style="color:var(--accent-violet)">디지털 소리</b> : 아날로그 소리를 컴퓨터가 처리할 수 있도록 <b>0과 1의 이진수</b>로 변환한 불연속적인 신호입니다. 표본화 → 양자화 → 부호화 3단계를 거쳐 만들어집니다.</div></div>
+
+                        <!-- ── 3단계 PCM 애니메이션 ── -->
+                        <div id="pcm-anim-wrap" style="width:100%;margin:14px 0 8px;background:#f8f6ff;border-radius:16px;padding:16px 18px;border:1.5px solid #ede9fe;">
+                            <div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap;">
+                                <button onclick="pcmStep(1)" id="pcmBtn1" style="padding:7px 18px;border-radius:20px;border:2px solid var(--accent-blue);background:var(--accent-blue);color:#fff;font-weight:900;font-size:0.82rem;cursor:pointer!important;">① 표본화</button>
+                                <button onclick="pcmStep(2)" id="pcmBtn2" style="padding:7px 18px;border-radius:20px;border:2px solid var(--multi-violet);background:#fff;color:var(--multi-violet);font-weight:900;font-size:0.82rem;cursor:pointer!important;">② 양자화</button>
+                                <button onclick="pcmStep(3)" id="pcmBtn3" style="padding:7px 18px;border-radius:20px;border:2px solid var(--accent-green);background:#fff;color:var(--accent-green);font-weight:900;font-size:0.82rem;cursor:pointer!important;">③ 부호화</button>
+                            </div>
+                            <canvas id="pcmAnimCanvas" width="2700" height="840" style="width:100%;max-width:900px;display:block;margin:0 auto;border-radius:10px;background:#fff;border:1px solid #e2e8f0;"></canvas>
+                            <div id="pcmAnimLabel" style="text-align:center;margin-top:10px;font-size:0.92rem;font-weight:700;color:var(--multi-violet);min-height:22px;"></div>
+                        </div>
+
                         <div class="concept-row"><div class="concept-icon">✂️</div><div style="flex:1;"><b>1단계: </b><button class="pill-btn" onclick="revealInline(this, '표본화 (Sampling)', 'var(--accent-blue)')">❓ 확인</button><br>연속적인 아날로그 파형을 <b>일정한 시간 간격으로 잘게 쪼개어</b> 값을 추출하는 과정입니다.<br><span style="font-size: 0.85rem; color: var(--text-sub);">* 샘플링 레이트: 1초에 몇 번 쪼개는지 나타내며 단위는 헤르츠(Hz)를 사용합니다.</span></div></div>
                         <div class="concept-row"><div class="concept-icon">📏</div><div style="flex:1;"><b>2단계: </b><button class="pill-btn" style="background: linear-gradient(135deg, var(--multi-violet), #a29bfe);" onclick="revealInline(this, '양자화 (Quantization)', 'var(--multi-violet)')">❓ 확인</button><br>표본화로 추출된 실수 값을 가장 가까운 <b>정수(단계)로 반올림하여 수치화</b>하는 과정입니다.<br><span style="font-size: 0.85rem; color: var(--text-sub);">* 표현 단계 수(정밀도): 소리의 크기를 몇 단계로 쪼갤지 결정합니다. (비트 수가 클수록 정밀합니다.)</span></div></div>
                         <div class="concept-row"><div class="concept-icon">🔢</div><div style="flex:1;"><b>3단계: </b><button class="pill-btn" style="background: linear-gradient(135deg, var(--accent-green), #55efc4);" onclick="revealInline(this, '부호화 (Encoding)', 'var(--accent-green)')">❓ 확인</button><br>양자화된 수치(정수)를 컴퓨터가 이해하고 저장할 수 있도록 <b>0과 1의 이진수 코드로 변환</b>하는 과정입니다.</div></div>
@@ -472,7 +482,7 @@
         }
         function revealInline(btn, text, color) { const span = document.createElement('span'); span.className = 'pop-anim revealed-text'; span.style.color = color; span.style.fontWeight = '900'; span.innerText = text; btn.parentNode.replaceChild(span, btn); }
         
-        const visCanvas = document.getElementById('soundVisCanvas'); const visCtx = visCanvas.getContext('2d'); let scanX = 0; let isScanning = false; let visTick = 0;
+        const visCanvas = document.getElementById('soundVisCanvas'); const visCtx = visCanvas.getContext('2d'); let scanX = 0; let isScanning = false; let visTick = 0; let sampledPoints = []; // 막대가 통과한 순간의 Y값 저장
         function drawWaveform() {
             visCtx.fillStyle = 'rgba(18, 10, 33, 1)'; visCtx.fillRect(0, 0, 600, 300);
             visCtx.strokeStyle = 'rgba(179, 136, 255, 0.15)'; visCtx.lineWidth = 1;
@@ -488,14 +498,65 @@
             });
             visCtx.shadowBlur = 0;
             if(isScanning) {
-                visCtx.fillStyle = 'rgba(255, 255, 255, 0.8)'; visCtx.fillRect(scanX, 0, 2, 300);
-                for(let x = 0; x < scanX; x += 30) { let env = Math.sin((x / 600) * Math.PI); let freq1 = Math.sin((x + visTick * 1.5) * 0.02) * 45; let freq2 = Math.sin((x + visTick * 3.0) * 0.05) * 20; let freq3 = Math.sin((x - visTick * 2.0) * 0.01) * 15; let y = 150 + env * (freq1 + freq2 + freq3); visCtx.fillStyle = 'rgba(0, 184, 148, 0.3)'; visCtx.fillRect(x - 2, y, 4, 300 - y); visCtx.fillStyle = '#00b894'; visCtx.beginPath(); visCtx.arc(x, y, 5, 0, Math.PI*2); visCtx.fill(); let qVal = Math.floor((300 - y) / 9.6); if(qVal < 0) qVal = 0; if(qVal > 31) qVal = 31; let bin = qVal.toString(2).padStart(5, '0'); visCtx.fillStyle = '#ffeaa7'; visCtx.font = 'bold 12px "JetBrains Mono", monospace'; visCtx.textAlign = 'center'; visCtx.fillText(bin, x, y - 12); }
+                // ── 1. 막대가 샘플 위치 도달 순간 Y값 저장 ──
+                const nextSampleX = sampledPoints.length * 30;
+                if(scanX >= nextSampleX && nextSampleX < 600) {
+                    const sx = nextSampleX;
+                    const env  = Math.sin((sx / 600) * Math.PI);
+                    const freq1 = Math.sin((sx + visTick * 1.5) * 0.02) * 45;
+                    const freq2 = Math.sin((sx + visTick * 3.0) * 0.05) * 20;
+                    const freq3 = Math.sin((sx - visTick * 2.0) * 0.01) * 15;
+                    const sy = 150 + env * (freq1 + freq2 + freq3);
+                    sampledPoints.push({ x: sx, y: sy });
+                }
+
+                // ── 2. 저장된 점 + 이진수 표시 (막대 뒤쪽만) ──
+                sampledPoints.forEach(pt => {
+                    if(pt.x >= scanX) return; // 막대가 아직 안 지난 곳은 표시 안 함
+                    visCtx.fillStyle = 'rgba(0, 184, 148, 0.3)';
+                    visCtx.fillRect(pt.x - 2, pt.y, 4, 300 - pt.y);
+                    visCtx.fillStyle = '#00b894';
+                    visCtx.beginPath(); visCtx.arc(pt.x, pt.y, 5, 0, Math.PI*2); visCtx.fill();
+                    let qVal = Math.floor((300 - pt.y) / 9.6);
+                    if(qVal < 0) qVal = 0; if(qVal > 31) qVal = 31;
+                    const bin = qVal.toString(2).padStart(5, '0');
+                    visCtx.fillStyle = '#ffeaa7';
+                    visCtx.font = 'bold 12px "JetBrains Mono", monospace';
+                    visCtx.textAlign = 'center';
+                    visCtx.fillText(bin, pt.x, pt.y - 12);
+                });
+                visCtx.textAlign = 'left';
+
+                // ── 3. Canvas 위에 파란 막대 직접 그리기 ──
+                // CSS scanLine과 달리 같은 프레임에서 렌더링 → 완벽히 동기화
+                visCtx.fillStyle = '#00cec9';
+                visCtx.shadowColor = '#00cec9';
+                visCtx.shadowBlur = 12;
+                visCtx.fillRect(scanX, 0, 4, 300);
+                visCtx.shadowBlur = 0;
+
+                // ── 4. scanX 증가 (setInterval 대신 프레임마다 직접) ──
+                scanX += 3;
+            }
+            if(isScanning && scanX >= 600) {
+                // 막대가 끝에 도달 → 1초 후 종료
+                setTimeout(() => { isScanning = false; sampledPoints = []; }, 1000);
+                scanX = 600; // 더 이상 증가 안 함
             }
             if(!isScanning) visTick += 1.5;
             requestAnimationFrame(drawWaveform);
         }
         drawWaveform();
-        function startAudioScan() { if(isScanning) return; isScanning = true; scanX = 0; visTick = 100; const scanLine = document.getElementById('scanLine'); scanLine.style.display = 'block'; let interval = setInterval(() => { scanX += 6; scanLine.style.left = scanX + 'px'; if(scanX >= 600) { clearInterval(interval); setTimeout(()=>{ isScanning=false; scanLine.style.display='none'; }, 1000); } }, 30); }
+        function startAudioScan() {
+            if(isScanning) return;
+            isScanning = true;
+            scanX = 0;
+            visTick = 100;
+            sampledPoints = [];
+            // CSS scanLine은 사용 안 함 (Canvas 위에 직접 그림)
+            // scanX는 drawWaveform 프레임마다 +3씩 증가 (requestAnimationFrame ~60fps = 180px/s)
+            // 600px 도달 시 isScanning=false → drawWaveform 내에서 처리
+        }
         
         const dCanvas = document.getElementById('drawCanvas'); const dCtx = dCanvas.getContext('2d'); let isDrawing = false; let drawnPath = []; let currentMode = 'manual'; let currentSampleCount = 10; let extractedQuantValues = [];
         
@@ -770,7 +831,7 @@
                 
                 for(let i = 0; i < bufferLength; i++) {
                     const v = dataArray[i] / 128.0;
-                    const y = v * height / 2;
+                    const y = height / 2 - (v - 1.0) * (height / 2);
                     
                     if(i === 0) {
                         ctx.moveTo(x, y);
@@ -928,6 +989,244 @@ ${reflection}
                 updateDots(0);
                 const activeMenu = document.querySelector('.menu-link.active'); if (activeMenu && activeMenu.textContent.endsWith(' ✓')) { activeMenu.textContent = activeMenu.textContent.replace(' ✓', ''); } } catch(e) {} const dc = document.getElementById('modalContent'); dc.className = 'modal-content-small'; dc.innerHTML = `<div style="font-size:2.2rem; margin-bottom:10px;">✅</div><h3 style="margin-bottom:10px; font-size:1.2rem; font-weight:900;">삭제 완료!</h3><p style="font-size:0.9rem; color:#555; margin-bottom:18px;">이 단원의 학습 내용이 모두 삭제되었습니다.</p><button onclick="closeModal()" style="width:100%; padding:11px; color:white; border:none; border-radius:12px; font-weight:700; font-size:0.95rem; cursor:pointer; background:#10b981;">확인</button>`; }
         window.addEventListener('keydown', function(e) { const alertOverlay = document.getElementById('customAlertModal'); if (alertOverlay && alertOverlay.style.display === 'flex') { if (e.key === 'Enter') { e.preventDefault(); closeCustomAlert(); } } });
+
+        // ── PCM 3단계 애니메이션 (HiDPI 선명 버전) ─────────────────
+        (function() {
+            const canvas = document.getElementById('pcmAnimCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            // ── HiDPI 강제 3배 해상도 (1920px 화면 Chrome/Edge/Safari/Mac/Windows 최적화) ──
+            const CSS_W = 900, CSS_H = 280;
+            const dpr = Math.max(window.devicePixelRatio || 1, 3);
+            canvas.width  = CSS_W * dpr;
+            canvas.height = CSS_H * dpr;
+            canvas.style.width  = '100%';
+            canvas.style.maxWidth = CSS_W + 'px';
+            canvas.style.height = 'auto';
+            ctx.scale(dpr, dpr);
+
+            // 이후 모든 좌표는 CSS 픽셀 기준 (dpr 자동 적용됨)
+            const W = CSS_W, H = CSS_H;
+            const PAD = 48;
+            const WAVE_TOP = 52, WAVE_BOT = H - 64;
+            const INNER_W  = W - PAD * 2;
+            const INNER_H  = WAVE_BOT - WAVE_TOP;
+            const SAMPLES  = 12;
+            const Y_LEVELS = 8;
+
+            function analogY(nx) {
+                const t = nx * Math.PI * 2.2;
+                return 0.5 + 0.38 * Math.sin(t) * Math.cos(t * 0.4 + 0.5);
+            }
+
+            const sampleXs = Array.from({length: SAMPLES}, (_, i) =>
+                PAD + (i / (SAMPLES - 1)) * INNER_W);
+            const sampleYs  = sampleXs.map(sx => analogY((sx - PAD) / INNER_W));
+            const quantized  = sampleYs.map(y => Math.round(y * (Y_LEVELS - 1)));
+            const encoded    = quantized.map(v => v.toString(2).padStart(3, '0'));
+
+            function waveY(norm) { return WAVE_BOT - norm * INNER_H; }
+            function gridY(qv)   { return WAVE_BOT - (qv / (Y_LEVELS - 1)) * INNER_H; }
+
+            // ── 공통 배경: 격자 + Y축 숫자 + 파형 ─────────────────
+            function drawBackground() {
+                ctx.clearRect(0, 0, W, H);
+
+                // Y축 레이블
+                ctx.fillStyle = '#334155';
+                ctx.font = 'bold 11px JetBrains Mono, monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText('진폭', 16, WAVE_TOP + INNER_H / 2);
+                ctx.textAlign = 'left';
+
+                // 격자선 + Y축 숫자 (0~7) — 선명하게
+                for (let i = 0; i <= Y_LEVELS - 1; i++) {
+                    const y = gridY(i);
+                    // 격자선
+                    ctx.strokeStyle = i === 0 ? '#94a3b8' : '#cbd5e1';
+                    ctx.lineWidth   = i === 0 ? 1.5 : 0.8;
+                    ctx.setLineDash(i === 0 ? [] : []);
+                    ctx.beginPath();
+                    ctx.moveTo(PAD, y);
+                    ctx.lineTo(W - PAD + 8, y);
+                    ctx.stroke();
+                    // Y축 숫자 — 굵고 진하게
+                    ctx.fillStyle = '#334155';
+                    ctx.font = 'bold 12px JetBrains Mono, monospace';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(i, PAD - 8, y + 4.5);
+                }
+                ctx.textAlign = 'left';
+                ctx.setLineDash([]);
+
+                // X축 (바닥선)
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(PAD, WAVE_BOT);
+                ctx.lineTo(W - PAD, WAVE_BOT);
+                ctx.stroke();
+
+                // Y축
+                ctx.beginPath();
+                ctx.moveTo(PAD, WAVE_TOP - 10);
+                ctx.lineTo(PAD, WAVE_BOT);
+                ctx.stroke();
+
+                // 아날로그 파형 — 항상 파란색 선명하게
+                ctx.beginPath();
+                for (let px = 0; px <= INNER_W; px++) {
+                    const y = waveY(analogY(px / INNER_W));
+                    px === 0 ? ctx.moveTo(PAD + px, y) : ctx.lineTo(PAD + px, y);
+                }
+                ctx.strokeStyle = '#0984e3';
+                ctx.lineWidth   = 2.5;
+                ctx.shadowColor = 'rgba(9,132,227,0.25)';
+                ctx.shadowBlur  = 3;
+                ctx.stroke();
+                ctx.shadowBlur = 0;
+            }
+
+            // ── 1단계: 표본화 ────────────────────────────────────────
+            function drawStep1() {
+                drawBackground();
+
+                ctx.fillStyle = '#0984e3';
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.fillText('① 표본화 (Sampling) — 일정한 시간 간격으로 값을 추출합니다', PAD, 34);
+
+                sampleXs.forEach((sx, i) => {
+                    const sy = waveY(sampleYs[i]);
+                    // 수직 점선
+                    ctx.setLineDash([5, 4]);
+                    ctx.strokeStyle = 'rgba(9,132,227,0.45)';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath(); ctx.moveTo(sx, WAVE_BOT); ctx.lineTo(sx, sy); ctx.stroke();
+                    ctx.setLineDash([]);
+                    // 추출점 (파란 원)
+                    ctx.beginPath(); ctx.arc(sx, sy, 5.5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#0984e3'; ctx.fill();
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8; ctx.stroke();
+                });
+
+                document.getElementById('pcmAnimLabel').textContent =
+                    '아날로그 파형을 ' + SAMPLES + '개의 시간 지점에서 측정합니다. 파란 점이 추출된 표본(샘플)입니다.';
+            }
+
+            // ── 2단계: 양자화 ────────────────────────────────────────
+            function drawStep2() {
+                drawBackground();
+
+                ctx.fillStyle = '#6c5ce7';
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.fillText('② 양자화 (Quantization) — 추출값을 가장 가까운 정수(0~7)로 반올림합니다', PAD, 34);
+
+                sampleXs.forEach((sx, i) => {
+                    const origY = waveY(sampleYs[i]);
+                    const qy    = gridY(quantized[i]);
+
+                    // 원래 표본점 (회색) — 보라점보다 먼저 그려서 보라점 위에 나오게
+                    ctx.beginPath(); ctx.arc(sx, origY, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ff0000'; ctx.fill();
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.2; ctx.stroke();
+
+                    // 화살표 (origY → qy)
+                    if (Math.abs(origY - qy) > 3) {
+                        ctx.strokeStyle = '#a29bfe'; ctx.lineWidth = 1.5;
+                        ctx.setLineDash([3, 3]);
+                        ctx.beginPath(); ctx.moveTo(sx, origY + (qy > origY ? 5 : -5)); ctx.lineTo(sx, qy + (qy > origY ? -7 : 7)); ctx.stroke();
+                        ctx.setLineDash([]);
+                        const dir = qy > origY ? 1 : -1;
+                        ctx.fillStyle = '#a29bfe';
+                        ctx.beginPath();
+                        ctx.moveTo(sx, qy); ctx.lineTo(sx - 4, qy - dir * 7); ctx.lineTo(sx + 4, qy - dir * 7);
+                        ctx.closePath(); ctx.fill();
+                    }
+
+                    // 양자화된 점 (보라) — 크기 줄임 r=5
+                    ctx.beginPath(); ctx.arc(sx, qy, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#6c5ce7'; ctx.fill();
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8; ctx.stroke();
+
+                    // 정수값 숫자 (점 위)
+                    ctx.fillStyle = '#4527a0';
+                    ctx.font = 'bold 11px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(quantized[i], sx, qy - 10);
+                });
+                ctx.textAlign = 'left';
+
+               document.getElementById('pcmAnimLabel').innerHTML =
+    '<b><span style="color:#e74c3c;">빨간색 점(원래 값)</span> → 보라 점(반올림된 정수). 보라색 숫자(0~7)가 양자화된 정수값입니다.</b>';
+            }
+
+            // ── 3단계: 부호화 ────────────────────────────────────────
+            function drawStep3() {
+                drawBackground();
+
+                ctx.fillStyle = '#00b894';
+                ctx.font = 'bold 13px Inter, sans-serif';
+                ctx.fillText('③ 부호화 (Encoding) — 정수값을 3비트 이진수로 변환합니다', PAD, 34);
+
+                sampleXs.forEach((sx, i) => {
+                    const qy = gridY(quantized[i]);
+
+                    // 연결선 (점 → 이진수 표시 영역)
+                    ctx.strokeStyle = 'rgba(0,184,148,0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(sx, qy + 6); ctx.lineTo(sx, WAVE_BOT + 6); ctx.stroke();
+
+                    // 양자화 점 (초록) — 크기 r=5
+                    ctx.beginPath(); ctx.arc(sx, qy, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = '#00b894'; ctx.fill();
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8; ctx.stroke();
+
+                    // 정수값 (점 위)
+                    ctx.fillStyle = '#065f46';
+                    ctx.font = 'bold 11px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(quantized[i], sx, qy - 9);
+
+                    // 이진수 3비트 — 하단에 세로로
+                    const bits = encoded[i].split('');
+                    bits.forEach((bit, bi) => {
+                        ctx.fillStyle = bit === '1' ? '#059669' : '#94a3b8';
+                        ctx.font = 'bold 12px JetBrains Mono, monospace';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(bit, sx, WAVE_BOT + 16 + bi * 16);
+                    });
+                });
+                ctx.textAlign = 'left';
+
+                document.getElementById('pcmAnimLabel').textContent =
+                    '정수값(점 위 숫자) → 아래 3비트 이진수. 초록=1, 회색=0. 예) 4 → 100, 6 → 110';
+            }
+
+            // ── 버튼 활성화 ─────────────────────────────────────────
+            window.pcmStep = function(n) {
+                const colors = ['#0984e3', '#6c5ce7', '#00b894'];
+                ['pcmBtn1','pcmBtn2','pcmBtn3'].forEach((id, idx) => {
+                    const btn = document.getElementById(id);
+                    if (!btn) return;
+                    if (idx + 1 === n) {
+                        btn.style.background = colors[idx];
+                        btn.style.borderColor = colors[idx];
+                        btn.style.color = '#fff';
+                    } else {
+                        btn.style.background = '#fff';
+                        btn.style.borderColor = colors[idx];
+                        btn.style.color = colors[idx];
+                    }
+                });
+                if (n === 1) drawStep1();
+                else if (n === 2) drawStep2();
+                else drawStep3();
+            };
+
+            drawStep1();
+        })();
+
     </script>
 </body>
 </html>
