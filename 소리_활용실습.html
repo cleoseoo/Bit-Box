@@ -228,7 +228,7 @@
             <div class="gate-content">
                 <div class="gate-title">MIDI MODE</div>
                 <div class="gate-desc">
-                    <span style="color:var(--cyber-magenta);">6-BIT CYBER BITBOX</span><br>
+                    <span style="color:var(--cyber-magenta);">6-BIT SOUND BITBOX</span><br>
                     컴퓨터의 이진수 명령어로 동작하는 전자 악기(피아노)<br>
                     [이진수 피아노 재생 실습]
                 </div>
@@ -331,7 +331,7 @@
         <div class="dashboard">
             <div class="midi-header">
                 <div class="title-box">
-                    <h1 class="title cyber-font">🎹 6-BIT CYBER BITBOX</h1>
+                    <h1 class="title cyber-font">🎹 6-BIT SUOND BITBOX</h1>
                     <div class="subtitle" style="color:#E0F2FE; margin-top:5px; font-weight:600;">0과 1의 하모니로 연주하는 디지털 피아노</div>
                     <div class="ergonomic-badge">🤚 왼손: C3~B3 (하단) &nbsp;&nbsp;|&nbsp;&nbsp; 🖐 오른손: C4~B5 (상단/우측)</div>
                 </div>
@@ -368,8 +368,8 @@
                 <div class="controls">
                     <div class="tempo-box">
                         <span class="cyber-font" style="font-size: 0.7rem; color: var(--cyber-yellow);">속도(ms)</span>
-                        <input type="range" id="tempoSlider" min="100" max="1000" value="450" step="50" oninput="updateTempo(this.value)">
-                        <span id="tempoValue" class="cyber-font" style="color: var(--cyber-cyan); font-size: 0.9rem; min-width: 50px;">450ms</span>
+                        <input type="range" id="tempoSlider" min="40" max="600" value="133" step="1" oninput="updateTempo(this.value)">
+                        <span id="tempoValue" class="cyber-font" style="color: var(--cyber-cyan); font-size: 0.9rem; min-width: 70px;">133 BPM</span>
                     </div>
 
                     <button class="btn" id="btnRecord" onclick="toggleRecord()"
@@ -1138,6 +1138,17 @@
                 try { osc.stop(now + 0.8); } catch(e) {}
             });
 
+            // 녹음 중: 해당 음의 durationMs 기록
+            if (isRecording) {
+                const releaseTime = performance.now() - recordStartTime;
+                for (let i = recordedNotes.length - 1; i >= 0; i--) {
+                    if (recordedNotes[i].noteIndex === index && !recordedNotes[i].durationMs) {
+                        recordedNotes[i].durationMs = releaseTime - recordedNotes[i].pressTime;
+                        break;
+                    }
+                }
+            }
+
             delete activeNodes[index];
             keyElements[index].classList.remove('active');
         }
@@ -1211,8 +1222,9 @@
         }
 
         function updateTempo(val) {
-            currentTempo = parseInt(val);
-            document.getElementById('tempoValue').innerText = val + "ms";
+            const bpm = parseInt(val);
+            currentTempo = Math.round(60000 / bpm); // BPM → ms 변환
+            document.getElementById('tempoValue').innerText = bpm + " BPM";
         }
 
         function loadSong(s) {
@@ -1221,8 +1233,8 @@
             // ③ bpm → 4분음표 ms
             const beatMs = Math.round(60000 / song.bpm);
             document.getElementById('binaryInput').value = songToText(s);
-            document.getElementById('tempoSlider').value = beatMs;
-            updateTempo(beatMs);
+            document.getElementById('tempoSlider').value = song.bpm; // BPM 직접 설정
+            updateTempo(song.bpm);
             const label = {'bitbox':'비트박스','beethoven':'환희의 송가','star':'작은 별'};
             document.getElementById('terminal-status').innerText = '🎵 ' + (label[s] || s) + ' 불러옴  (빠르기: ' + song.bpm + ')';
             currentSongKey = s;
@@ -1350,22 +1362,25 @@
             document.getElementById('terminal-status').innerText = '⏳ 소리 파일 만드는 중...';
 
             // 박자 결정: 녹음 데이터 있으면 실제 타이밍, 내장곡이면 악보 박자, 직접 입력이면 균등
-            let noteTimings = null; // [{startMs, durationMs}] 형태
+            let noteTimings = null;
             if (recordedNotes.length === codes.length) {
-                // 녹음 데이터의 실제 타이밍 사용
                 noteTimings = recordedNotes.map((rn, i) => ({
                     startMs:    rn.pressTime,
-                    durationMs: rn.durationMs || Math.max(100,
-                        i + 1 < recordedNotes.length
-                            ? recordedNotes[i+1].pressTime - rn.pressTime
-                            : 400)
+                    durationMs: Math.max(300, rn.durationMs || 400) // 최소 300ms 보장
                 }));
             }
-
             const durations = (currentSongKey && songs[currentSongKey])
                 ? songs[currentSongKey].notes.map(n => n.d) : codes.map(() => 1);
             const sampleRate = 44100;
-            const totalSec = codes.reduce((acc,_,i) => acc+(durations[i]||1)*currentTempo/1000, 0)+1.0;
+            // totalSec: 녹음 타이밍 있으면 실제 끝 시간 기준, 없으면 균등 박자 기준
+            let totalSec;
+            if (noteTimings && noteTimings.length > 0) {
+                const last = noteTimings[noteTimings.length - 1];
+                const lastEndMs = last.startMs + Math.max(300, last.durationMs || 400);
+                totalSec = lastEndMs / 1000 + 1.5; // 마지막 음 끝 + release 여유
+            } else {
+                totalSec = codes.reduce((acc,_,i) => acc+(durations[i]||1)*currentTempo/1000, 0)+1.5;
+            }
             const offCtx = new OfflineAudioContext(1, Math.ceil(sampleRate*totalSec), sampleRate);
             const harmonics = [{mult:1,gain:0.6},{mult:2,gain:0.25},{mult:3,gain:0.1},{mult:4,gain:0.05}];
             let timeOffset = 0;
@@ -1399,7 +1414,7 @@
                     const osc=offCtx.createOscillator(); const hg=offCtx.createGain();
                     osc.type='sine'; osc.frequency.value=n.freq*h.mult; hg.gain.value=h.gain;
                     osc.connect(hg); hg.connect(mg);
-                    osc.start(startT); osc.stop(Math.min(offT+release,totalSec));
+                    osc.start(startT); osc.stop(Math.min(offT+release, totalSec - 0.01));
                 });
             });
             const rendered = await offCtx.startRendering();
@@ -1425,71 +1440,92 @@
             // MIDI 음표 번호: C3(index 0) = MIDI 48번
             const MIDI_BASE = 48;
             const TICKS_PER_BEAT = 480;
+            const BPM_FIXED = 120;                    // 고정 BPM
+            const BEAT_MS   = 60000 / BPM_FIXED;     // 500ms/beat
+            const TEMPO_US  = Math.round(60000000 / BPM_FIXED); // 500000 μs/beat
 
             // 박자 결정
-            let beatMs = currentTempo; // 기본: 현재 템포
             let noteDurations = []; // 각 음의 길이 (tick 단위)
             let noteGaps      = []; // 음 사이 간격 (tick 단위, delta time)
 
             if (recordedNotes.length === codes.length) {
                 // 실제 녹음 타이밍 사용
-                // 첫 음 기준 BPM 추정 (평균 음 간격)
-                const avgGapMs = recordedNotes.length > 1
-                    ? (recordedNotes[recordedNotes.length-1].pressTime - recordedNotes[0].pressTime) / (recordedNotes.length - 1)
-                    : currentTempo;
-                beatMs = Math.max(200, Math.min(avgGapMs, 2000));
-
+                // ms → tick 변환: tick = ms / BEAT_MS * TICKS_PER_BEAT
                 codes.forEach((_, i) => {
-                    const rn = recordedNotes[i];
-                    const durMs = rn.durationMs || Math.max(100,
-                        i+1 < recordedNotes.length ? recordedNotes[i+1].pressTime - rn.pressTime : 400);
-                    noteDurations.push(Math.round(durMs / beatMs * TICKS_PER_BEAT));
-                    const gapMs = i === 0 ? 0 : rn.pressTime - recordedNotes[i-1].pressTime;
-                    noteGaps.push(Math.max(0, Math.round(gapMs / beatMs * TICKS_PER_BEAT)));
+                    const rn    = recordedNotes[i];
+                    // 최소 300ms 보장: 건반을 짧게 눌러도 음이 들릴 수 있도록
+                    const durMs = Math.max(300, rn.durationMs || 400);
+                    let gapMs   = 0;
+                    if (i > 0) {
+                        const prev       = recordedNotes[i - 1];
+                        const prevDurMs  = Math.max(300, prev.durationMs || 400);
+                        const prevOffMs  = prev.pressTime + prevDurMs; // 이전 음 NoteOFF 시각
+                        gapMs = Math.max(0, rn.pressTime - prevOffMs); // NoteOFF ~ NoteON 사이 쉼표
+                    }
+                    noteDurations.push(Math.round(durMs / BEAT_MS * TICKS_PER_BEAT));
+                    noteGaps.push(Math.round(gapMs / BEAT_MS * TICKS_PER_BEAT));
                 });
             } else if (currentSongKey && songs[currentSongKey]) {
-                // 내장곡 박자
-                const song = songs[currentSongKey];
-                beatMs = Math.round(60000 / song.bpm);
-                song.notes.forEach(sn => {
-                    noteDurations.push(Math.round(sn.d * TICKS_PER_BEAT));
-                    noteGaps.push(0);
+                // 내장곡 박자: 음 85% + 쉼표 15% (음이 겹치지 않도록)
+                songs[currentSongKey].notes.forEach((sn, i) => {
+                    const totalTick = Math.round(sn.d * TICKS_PER_BEAT);
+                    const noteTick  = Math.round(totalTick * 0.85); // 음 길이
+                    const restTick  = totalTick - noteTick;          // 쉼표
+                    noteDurations.push(noteTick);
+                    noteGaps.push(i === 0 ? 0 : restTick); // 첫 음은 gap 0, 이후는 이전 쉼표
                 });
             } else {
-                // 균등 박자
-                codes.forEach(() => {
-                    noteDurations.push(TICKS_PER_BEAT);
-                    noteGaps.push(0);
+                // 균등 박자: 음 85% + 쉼표 15%
+                codes.forEach((_, i) => {
+                    const totalTick = Math.round(currentTempo / BEAT_MS * TICKS_PER_BEAT);
+                    const noteTick  = Math.round(totalTick * 0.85);
+                    const restTick  = totalTick - noteTick;
+                    noteDurations.push(noteTick);
+                    noteGaps.push(i === 0 ? 0 : restTick);
                 });
             }
 
             // MIDI 데이터 생성
-            const tempo  = Math.round(60000000 / (beatMs > 0 ? beatMs : 500)); // μs per beat
             const events = [];
 
-            // Tempo 이벤트
+            // Tempo 이벤트 (BPM 120 = 500,000 μs/beat)
             events.push([0x00, 0xFF, 0x51, 0x03,
-                (tempo >> 16) & 0xFF, (tempo >> 8) & 0xFF, tempo & 0xFF]);
+                (TEMPO_US >> 16) & 0xFF, (TEMPO_US >> 8) & 0xFF, TEMPO_US & 0xFF]);
 
             // Program Change: 피아노(0번)
             events.push([0x00, 0xC0, 0x00]);
 
-            // 음표 이벤트
+            // 음표 이벤트 (MIDI delta time 기준)
+            // delta time = 이전 이벤트로부터 경과한 tick 수
+            // [gap] Note ON  : 이전 Note OFF 이후 gap tick 대기 → 음 시작
+            // [dur] Note OFF : Note ON 이후 dur tick 대기 → 음 종료
             codes.forEach((code, i) => {
                 const noteIdx = notes.findIndex(n => n.bin === code);
-                if (noteIdx === -1) return;
+                if (noteIdx === -1) {
+                    // 매핑 안 되는 코드: gap만큼 쉬고 다음으로
+                    const gap = noteGaps[i] || 0;
+                    const dur = noteDurations[i] || TICKS_PER_BEAT;
+                    // 빈 Note ON/OFF 대신 gap+dur를 다음 음의 gap에 합산
+                    if (i + 1 < codes.length) noteGaps[i + 1] = (noteGaps[i + 1] || 0) + gap + dur;
+                    return;
+                }
                 const midiNote = MIDI_BASE + noteIdx;
                 const velocity = 90;
-                const gap      = noteGaps[i]      || 0;
-                const dur      = noteDurations[i]  || TICKS_PER_BEAT;
+                const gap = noteGaps[i]     || 0;
+                const dur = noteDurations[i] || TICKS_PER_BEAT;
 
-                // delta time 앞에 오는 gap (이전 음 끝~이 음 시작)
-                events.push([...varLen(gap), 0x90, midiNote, velocity]); // Note ON
-                events.push([...varLen(dur),  0x80, midiNote, 0]);        // Note OFF
+                // Note ON: 이전 이벤트 이후 gap tick 대기
+                events.push([...varLen(gap), 0x90, midiNote, velocity]);
+                // Note OFF: Note ON 이후 dur tick 대기 (음이 울리는 시간)
+                events.push([...varLen(dur), 0x80, midiNote, 0]);
             });
 
-            // End of Track
-            events.push([0x00, 0xFF, 0x2F, 0x00]);
+            // End of Track — 마지막 음의 rest(쉼표)만큼 대기 후 종료
+            // delta=0이면 마지막 NoteOFF가 처리되기 전에 트랙이 끊길 수 있음
+            const lastRest = noteDurations.length > 0
+                ? Math.round((noteDurations[noteDurations.length - 1] * 0.18))
+                : 0;
+            events.push([...varLen(Math.max(lastRest, 1)), 0xFF, 0x2F, 0x00]);
 
             // 트랙 데이터 flat
             const trackData = events.flat();
